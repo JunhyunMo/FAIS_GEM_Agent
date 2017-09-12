@@ -365,11 +365,13 @@ void CFAIS_GEM_AgentDlg::OnBnClickedBtStart()
 void CFAIS_GEM_AgentDlg::OnBnClickedBtStop()
 {
 //for test	
-	//long nAlId = 1000;
+	//long nAlId = 9192;
 	//m_XGem.GEMSetAlarm(nAlId, 1); //Alarm Set
 
 	//m_XGem.GEMSetAlarm(nAlId, 0); //Alarm Clear
-//
+
+
+
 	long nRet = m_XGem.Stop();
 	CString strLog;
 	if(nRet == 0)
