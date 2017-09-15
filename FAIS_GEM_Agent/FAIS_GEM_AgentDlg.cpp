@@ -68,12 +68,11 @@ BEGIN_MESSAGE_MAP(CFAIS_GEM_AgentDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_BN_CLICKED(IDC_BT_INITIALIZE, &CFAIS_GEM_AgentDlg::OnBnClickedBtInitialize)
 	ON_BN_CLICKED(IDC_BT_START, &CFAIS_GEM_AgentDlg::OnBnClickedBtStart)
 	ON_BN_CLICKED(IDC_BT_STOP, &CFAIS_GEM_AgentDlg::OnBnClickedBtStop)
-	ON_BN_CLICKED(IDC_BT_CLOSE, &CFAIS_GEM_AgentDlg::OnBnClickedBtClose)
 	ON_BN_CLICKED(IDC_BT_SVR_STOP, &CFAIS_GEM_AgentDlg::OnBnClickedBtSvrStop)
 	ON_WM_TIMER()
+	ON_BN_CLICKED(IDC_BT_SVR_START, &CFAIS_GEM_AgentDlg::OnBnClickedBtSvrStart)
 END_MESSAGE_MAP()
 
 
@@ -121,7 +120,7 @@ BOOL CFAIS_GEM_AgentDlg::OnInitDialog()
 
 	SvrStart();
 
-    Initialize();
+	XGemStart();
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -198,35 +197,35 @@ void CFAIS_GEM_AgentDlg::ProcGEM_FromEQ(CString strIP, CString strRcv)
 	CString strCommand,strPacketBody;
 	CString strSend;
 
-	BOOL bRet = FALSE;
-	int  nRet = -1;
+	long  nRet = -1;
 
 	strCommand = strRcv.Left(3);
 	strPacketBody = strRcv.Mid(8);
 
-	//if(strCommand == L"STA")
-	//{
-	//	bRet = GEMStart();
+	if(strCommand == L"STA")
+	{
+		nRet = XGemStart();
 
-	//	if(	bRet == TRUE)
-	//	{
-	//		strSend = L"STA0011|OK|";
-	//		m_GEM.GoOnlineRemote(); //2016-02-11 ERS만! RCMD 처리안함. 실질적으로 OnlineLocal...
-	//		m_bOnlineRemote = FALSE;
-	//	}
-	//}
-	//else if(strCommand == L"STP")
-	//{
-	//	GEMStop(); 
-	//	
-	//	//nRet = SendERS(strPacketBody);
-	//	strSend = L"STP0011|OK|";
-	//}
+		if(	nRet == 0)
+		{
+			strSend = L"STA0011|OK|";
+			//m_GEM.GoOnlineRemote(); //2016-02-11 ERS만! RCMD 처리안함. 실질적으로 OnlineLocal...
+			//m_bOnlineRemote = FALSE;
+			;
+		}
+	}
+	else if(strCommand == L"STP")
+	{
+		nRet = XGemStop(); 
+		
+		//nRet = SendERS(strPacketBody);
+		strSend = L"STP0011|OK|";
+	}
 	//else if(strCommand == L"END")
 	//{
 	//	PostQuitMessage(WM_QUIT);
 	//}
-	if(strCommand == L"ERS") //2016-06-06 1001,1002,1003 추가 - 장비에서 Online Local,Remote 설정시 이벤트
+	else if(strCommand == L"ERS") //2016-06-06 1001,1002,1003 추가 - 장비에서 Online Local,Remote 설정시 이벤트
 	{
 		/*nRet = SendERS(strPacketBody);
 		if(nRet >= 0)
@@ -313,7 +312,7 @@ void CFAIS_GEM_AgentDlg::AddLogTCP(CString str)
 	m_ctlListTCP.SetCurSel(nCnt - 1);
 }
 
-void CFAIS_GEM_AgentDlg::Initialize()
+long CFAIS_GEM_AgentDlg::XGemStart()
 {
 	CString strCfg = L"FAIS_Gem_Agent.cfg";
 
@@ -321,46 +320,74 @@ void CFAIS_GEM_AgentDlg::Initialize()
 	CString strLog;
 	if(nRet == 0)
 	{
-		strLog = L"XGem initialized successfully";
-		Start();
+		strLog = L"XGem 초기화 성공";
 		AddLogGEM(strLog);
+		GetLog()->Debug(strLog.GetBuffer());
+		
+		nRet = m_XGem.Start();
+
+		if(nRet == 0)
+		{
+			strLog = L"XGem 시작 성공";
+			AddLogGEM(strLog);
+			GetLog()->Debug(strLog.GetBuffer());
+			GetDlgItem(IDC_BT_START)->EnableWindow(FALSE);
+		}
+		else
+		{
+			strLog.Format(L"XGem 시작 실패 (%d).", nRet);
+			AddLogGEM(strLog);
+			GetLog()->Debug(strLog.GetBuffer());
+		}
+
 	}
 	else {
-		strLog.Format(L"XGem 초기화 실패 (%d) - 프로그램을 종료합니다.", nRet);
-		MessageBox(strLog,ERROR,MB_ICONERROR);
-		PostQuitMessage(0);
-    }
-}
-
-void CFAIS_GEM_AgentDlg::OnBnClickedBtInitialize()
-{
-	Initialize();
-}
-
-void CFAIS_GEM_AgentDlg::Start()
-{
-	long nRet = m_XGem.Start();
-	CString strLog;
-	if(nRet == 0)
-	{
-		strLog = L"XGem started successfully";
+		strLog.Format(L"XGem 초기화 실패 (%d).", nRet);
 		AddLogGEM(strLog);
-		GetDlgItem(IDC_BT_INITIALIZE)->EnableWindow(FALSE);
-		GetDlgItem(IDC_BT_START)->EnableWindow(FALSE);
-	}
-	else {
-		strLog.Format(L"XGem 시작 실패 (%d) - 프로그램을 종료합니다.", nRet);
-		MessageBox(strLog,ERROR,MB_ICONERROR);
-		PostQuitMessage(0);
+		GetLog()->Debug(strLog.GetBuffer());
     }
 	
+	return nRet;
 }
 
 void CFAIS_GEM_AgentDlg::OnBnClickedBtStart()
 {
-	Start();
+	XGemStart();
 }
 
+long CFAIS_GEM_AgentDlg::XGemStop()
+{
+	long nRet = m_XGem.Stop();
+	CString strLog;
+	if(nRet == 0)
+	{
+		strLog = L"XGem Stop 성공";
+		AddLogGEM(strLog);
+		GetLog()->Debug(strLog.GetBuffer());
+
+		
+		nRet = m_XGem.Close();
+		if(nRet == 0)
+		{
+			strLog = L"XGem Close 성공";
+			AddLogGEM(strLog);
+			GetLog()->Debug(strLog.GetBuffer());
+			GetDlgItem(IDC_BT_START)->EnableWindow(TRUE);
+		}
+		else
+		{
+			strLog.Format(L"XGem Close 실패 (%d)", nRet);
+			AddLogGEM(strLog);
+			GetLog()->Debug(strLog.GetBuffer());
+		}
+	}
+	else {
+		strLog.Format(L"XGem Stop 실패 (%d)", nRet);
+		AddLogGEM(strLog);
+		GetLog()->Debug(strLog.GetBuffer());
+    }
+	return nRet;
+}
 
 void CFAIS_GEM_AgentDlg::OnBnClickedBtStop()
 {
@@ -370,36 +397,9 @@ void CFAIS_GEM_AgentDlg::OnBnClickedBtStop()
 
 	//m_XGem.GEMSetAlarm(nAlId, 0); //Alarm Clear
 
-
-
-	long nRet = m_XGem.Stop();
-	CString strLog;
-	if(nRet == 0)
-	{
-		strLog = L"XGem stopped successfully";
-		GetDlgItem(IDC_BT_START)->EnableWindow(TRUE);
-	}
-	else {
-		strLog.Format(L"Fail to stop XGem (%d)", nRet);
-    }
-	AddLogGEM(strLog);
+	XGemStop();
 }
 
-
-void CFAIS_GEM_AgentDlg::OnBnClickedBtClose()
-{
-	long nRet = m_XGem.Close();
-	CString strLog;
-	if(nRet == 0)
-	{
-		strLog = L"XGem closed successfully";
-		GetDlgItem(IDC_BT_INITIALIZE)->EnableWindow(TRUE);
-	}
-	else {
-		strLog.Format(L"Fail to close XGem (%d)", nRet);
-    }
-	AddLogGEM(strLog);
-}
 BEGIN_EVENTSINK_MAP(CFAIS_GEM_AgentDlg, CDialogEx)
 	ON_EVENT(CFAIS_GEM_AgentDlg, IDC_EXGEMCTRL1, 27, CFAIS_GEM_AgentDlg::eXGEMStateEventExgemctrl1, VTS_I4)
 	ON_EVENT(CFAIS_GEM_AgentDlg, IDC_EXGEMCTRL1, 2, CFAIS_GEM_AgentDlg::eGEMCommStateChangedExgemctrl1, VTS_I4)
@@ -432,11 +432,13 @@ BOOL CFAIS_GEM_AgentDlg::SvrStart()
 
 		if (bRet == TRUE) {
 			strMsg = L"SetSockOpt SO_KEEPALIVE";
+			AddLogTCP(strMsg);
 			GetLog()->Debug(strMsg.GetBuffer());
 		}
 		else
 		{
 			strMsg = L"Fail - SetSockOpt SO_KEEPALIVE";
+			AddLogTCP(strMsg);
 			GetLog()->Debug(strMsg.GetBuffer());
 		}
 
@@ -529,27 +531,7 @@ void CFAIS_GEM_AgentDlg::eGEMCommStateChangedExgemctrl1(long nState)
 
 void CFAIS_GEM_AgentDlg::OnBnClickedBtSvrStop()
 {
-	//for test 2017-09-01
-		long	nReturn = 0;
-		CString strMsg = L"";
-		long nVID,nCEID;
-		CString strValue;
-		BSTR bstr;
-		nVID = 810;
-		strValue = L"test";
-		bstr = strValue.AllocSysString();
-		nReturn = m_XGem.GEMSetVariable(1, &nVID, &bstr);
-		SysFreeString(bstr);
-
-		nCEID = 803;
-		nReturn = m_XGem.GEMSetEvent(803);
-		if( nReturn == 0 ) {
-			AddLogGEM(L"Send GEMSetEvent 803 successfully");
-		}
-		else {
-			strMsg.Format(L"Fail to GEMSetEvent 803 (%d)", nReturn);
-			AddLogGEM(strMsg);
-		}
+	SvrStop();
 }
 
 
@@ -640,4 +622,9 @@ int CFAIS_GEM_AgentDlg::SendARS(CString strPacketBody)
 		nRet = m_XGem.GEMSetAlarm(nAlarm_ID, 0);
 	}
 	return nRet; //0: SUCCESS , <0 FAILURE
+}
+
+void CFAIS_GEM_AgentDlg::OnBnClickedBtSvrStart()
+{
+	SvrStart();
 }

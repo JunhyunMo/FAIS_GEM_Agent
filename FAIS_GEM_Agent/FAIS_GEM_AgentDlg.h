@@ -32,10 +32,8 @@ protected:
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
-	afx_msg void OnBnClickedBtInitialize();
 	afx_msg void OnBnClickedBtStart();
 	afx_msg void OnBnClickedBtStop();
-	afx_msg void OnBnClickedBtClose();
 	
 	DECLARE_EVENTSINK_MAP()
 	void eXGEMStateEventExgemctrl1(long nState);
@@ -64,10 +62,11 @@ public:
 	int	  m_nControlMode; //1: Off-Line 2: On-Line Local 3: On-Line Remote
 	void  ControlModeERS(long nCEID); //ERS - Event Report Send
 
-	//2017-09-04
-	void	Initialize();
-	void    Start();
+	//2017-09-15
+	long    XGemStart();
+	long	XGemStop();
 
 	//2017-09-05
 	int		SendARS(CString strPacketBody);
+	afx_msg void OnBnClickedBtSvrStart();
 };
