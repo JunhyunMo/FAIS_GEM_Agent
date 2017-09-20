@@ -51,7 +51,7 @@ void CClientSocket::OnReceive(int nErrorCode)
 	::ZeroMemory(szTBuffer, sizeof(szTBuffer));
 	
 	GetPeerName(strIP, nPort);
-//MJH TO-DO 2017-08-26 IP로 VISION/MMI 분기
+//MJH TO-DO 2017-08-26 IP로 VISION/MMI 분기. 필요하면...
 	CString strRcv,strLog;
 
 	if(Receive((BYTE*)szBuffer, sizeof(szBuffer)) > 0)
@@ -63,9 +63,9 @@ void CClientSocket::OnReceive(int nErrorCode)
 		strRcv.Format(L"%s",szTBuffer);	
 		pMain->ProcGEM_FromEQ(strIP,strRcv);
 
-		strLog.Format(L"[RCV][%s]%s",strIP,strRcv);
+		/*strLog.Format(L"[RCV][%s]%s",strIP,strRcv);
 		GetLog()->Debug(strLog.GetBuffer()); 
-		pMain->AddLogTCP(strLog);
+		pMain->AddLogTCP(strLog);*/
 	}
 	
 	CSocket::OnReceive(nErrorCode);

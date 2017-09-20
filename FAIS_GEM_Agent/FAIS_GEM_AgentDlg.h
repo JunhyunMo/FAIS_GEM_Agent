@@ -69,4 +69,6 @@ public:
 	//2017-09-05
 	int		SendARS(CString strPacketBody);
 	afx_msg void OnBnClickedBtSvrStart();
+	//2017-09-20
+	int 	SendERS(CString strPacketBody);
 };

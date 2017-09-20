@@ -191,8 +191,9 @@ void CFAIS_GEM_AgentDlg::Unicode2MBCS(LPWSTR lpData,LPSTR lpRtd)
 void CFAIS_GEM_AgentDlg::ProcGEM_FromEQ(CString strIP, CString strRcv)
 {
 	CString strMsg;// = L"[RCV]" + strRcv;
-	//AddLogTCP(strMsg);
-	//GetLog()->Debug(strMsg.GetBuffer());
+	strMsg.Format(L"[RCV](%s) %s",strIP,strRcv);
+	AddLogTCP(strMsg);
+	GetLog()->Debug(strMsg.GetBuffer());
 
 	CString strCommand,strPacketBody;
 	CString strSend;
@@ -204,30 +205,21 @@ void CFAIS_GEM_AgentDlg::ProcGEM_FromEQ(CString strIP, CString strRcv)
 
 	if(strCommand == L"STA")
 	{
-		nRet = XGemStart();
+		nRet = XGemStart(); //OnLine Remote 
 
 		if(	nRet == 0)
 		{
 			strSend = L"STA0011|OK|";
-			//m_GEM.GoOnlineRemote(); //2016-02-11 ERS만! RCMD 처리안함. 실질적으로 OnlineLocal...
-			//m_bOnlineRemote = FALSE;
-			;
 		}
 	}
 	else if(strCommand == L"STP")
 	{
 		nRet = XGemStop(); 
-		
-		//nRet = SendERS(strPacketBody);
 		strSend = L"STP0011|OK|";
 	}
-	//else if(strCommand == L"END")
-	//{
-	//	PostQuitMessage(WM_QUIT);
-	//}
-	else if(strCommand == L"ERS") //2016-06-06 1001,1002,1003 추가 - 장비에서 Online Local,Remote 설정시 이벤트
+	else if(strCommand == L"ERS") //2017-09-20 
 	{
-		/*nRet = SendERS(strPacketBody);
+		nRet = SendERS(strPacketBody);
 		if(nRet >= 0)
 		{
 			strSend = L"ERS0011|OK|";
@@ -235,10 +227,9 @@ void CFAIS_GEM_AgentDlg::ProcGEM_FromEQ(CString strIP, CString strRcv)
 		else
 		{
 			strSend = L"ERS0011|NG|";
-		}*/
-		;
+		}
 	}
-	else if(strCommand == L"ARS")
+	/*else if(strCommand == L"ARS")
 	{
 		nRet = SendARS(strPacketBody);
 		if(nRet == 0)
@@ -249,7 +240,7 @@ void CFAIS_GEM_AgentDlg::ProcGEM_FromEQ(CString strIP, CString strRcv)
 		{
 			strSend = L"ARS0011|NG|";
 		}
-	}
+	}*/
 	//else if(strCommand == L"TDS")
 	//{
 	//	return;
@@ -627,4 +618,76 @@ int CFAIS_GEM_AgentDlg::SendARS(CString strPacketBody)
 void CFAIS_GEM_AgentDlg::OnBnClickedBtSvrStart()
 {
 	SvrStart();
+}
+
+int CFAIS_GEM_AgentDlg::SendERS(CString strPacketBody)
+{
+	CString strCEID;
+	strCEID.Format(L"%s", strPacketBody.Left(4));
+	CString strSV;
+	strSV.Format(L"%s",strPacketBody.Mid(5));
+	
+	CString strValue;
+
+	int nIdx = -1;
+	int nIdxPrev = -1;
+
+	long nCEID,nVID;
+	BSTR bstr;
+	long nRet;
+	CString strEventName,strMsg;
+
+	//recv packet ex) ERS0017|1000|D/A|
+	if(strCEID == L"1000" ) // LOSS CODE REQ (1000)
+	{
+		nCEID = (long)_wtoi(strCEID);
+		strEventName = L"LOSS CODE REQ";
+		nIdx = strSV.Find(L"|");
+		strValue = strSV.Left(nIdx);
+		nIdxPrev = nIdx;
+
+		nVID = 1100; //TYPE(ASCII) - W/B,D/A
+		bstr = strValue.AllocSysString();
+		m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		SysFreeString(bstr);
+	}
+	else if(strCEID == L"1100" ) // MGZ Read (1000) - ERS0041|1100|IMS73225|HPBD-D1572_X_5_3_X|
+	{
+		nCEID = (long)_wtoi(strCEID);
+		strEventName = L"MGZ Read";
+		
+		nIdx = strSV.Find(L"|");
+		strValue = strSV.Left(nIdx);
+		nIdxPrev = nIdx;
+
+		nVID = 1101; //MAGAZINE_ID(ASCII) -  IMS73225
+		bstr = strValue.AllocSysString();
+		m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		SysFreeString(bstr);
+
+		nIdx = strSV.Find(L"|",nIdxPrev+1);
+		strValue = strSV.Mid(nIdxPrev+1, nIdx-nIdxPrev -1);
+		nIdxPrev = nIdx;
+
+		nVID = 1102; //CURRENT_RECIPE(ASCII) -  HPBD-D1572_X_5_3_X
+		bstr = strValue.AllocSysString();
+		m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		SysFreeString(bstr);
+
+	}
+
+	nRet = m_XGem.GEMSetEvent(nCEID);
+
+	if( nRet == 0 ) {
+		strMsg.Format(L"[S6F11] %s (%d)",strEventName,nCEID);
+        AddLogGEM(strMsg);
+		GetLog()->Debug(strMsg.GetBuffer());
+    }
+    else {
+		strMsg.Format(L"(ERROR)[S6F11] %s (%d) - ERR-%d",strEventName,nCEID,nRet);
+        AddLogGEM(strMsg);
+		GetLog()->Debug(strMsg.GetBuffer());
+    }
+
+	return nRet;
 }
