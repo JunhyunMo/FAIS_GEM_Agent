@@ -229,7 +229,7 @@ void CFAIS_GEM_AgentDlg::ProcGEM_FromEQ(CString strIP, CString strRcv)
 			strSend = L"ERS0011|NG|";
 		}
 	}
-	/*else if(strCommand == L"ARS")
+	else if(strCommand == L"ARS")
 	{
 		nRet = SendARS(strPacketBody);
 		if(nRet == 0)
@@ -240,7 +240,7 @@ void CFAIS_GEM_AgentDlg::ProcGEM_FromEQ(CString strIP, CString strRcv)
 		{
 			strSend = L"ARS0011|NG|";
 		}
-	}*/
+	}
 	//else if(strCommand == L"TDS")
 	//{
 	//	return;
@@ -523,6 +523,50 @@ void CFAIS_GEM_AgentDlg::eGEMCommStateChangedExgemctrl1(long nState)
 void CFAIS_GEM_AgentDlg::OnBnClickedBtSvrStop()
 {
 	SvrStop();
+
+	//for test - Setting data variable for complex type.
+	
+		//long nCEID = 1500;
+		//long nVID;
+		//BSTR bstr;
+		//CString strValue;
+
+		//nVID = 1103; //SUB ID
+		//strValue = L"R303571724IK1011707240FED";
+		//bstr = strValue.AllocSysString();
+		//m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		//SysFreeString(bstr);
+
+
+		//nVID = 1110; //OPER
+		//strValue = L"W/B";
+		//bstr = strValue.AllocSysString();
+		//m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		//SysFreeString(bstr);
+
+		//nVID = 1111; //SAMPLE_QTY 
+		//strValue = L"100";
+		//bstr = strValue.AllocSysString();
+		//m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		//SysFreeString(bstr);
+
+		////MEASURE_VALUE LIST
+		//nVID = 1114; 
+		//long nObjId = 0;
+
+		//m_XGem.MakeObject(&nObjId);
+		//m_XGem.SetList(nObjId, 3);
+		//double d = 100;
+		//m_XGem.SetU4(nObjId,&d,1);
+		//d = 1111;
+		//m_XGem.SetU4(nObjId,&d,1);
+		//
+		//d = 22222;
+		//m_XGem.SetU4(nObjId,&d,1);
+
+		//m_XGem.GEMSetVariables(nObjId, nVID);
+
+	 //  m_XGem.GEMSetEvent(nCEID);
 }
 
 
@@ -595,26 +639,6 @@ void CFAIS_GEM_AgentDlg::ControlModeERS(long nCEID)
 	}
 }
 
-int CFAIS_GEM_AgentDlg::SendARS(CString strPacketBody)
-{
-	//ex) ARS0011|1000|1|, ARS0011|1000|0|
-	CString strAlarmID = strPacketBody.Left(4);
-	CString strSet = strPacketBody.Mid(5,1); //1: Alarm Set, 0: Alarm Clear
-	
-	long  nAlarm_ID = _wtoi(strAlarmID);
-	long  nRet = -1;
-
-	if(strSet == L"1")
-	{
-		nRet = m_XGem.GEMSetAlarm(nAlarm_ID, 1);
-	}
-	else if (strSet == L"0")
-	{
-		nRet = m_XGem.GEMSetAlarm(nAlarm_ID, 0);
-	}
-	return nRet; //0: SUCCESS , <0 FAILURE
-}
-
 void CFAIS_GEM_AgentDlg::OnBnClickedBtSvrStart()
 {
 	SvrStart();
@@ -637,8 +661,7 @@ int CFAIS_GEM_AgentDlg::SendERS(CString strPacketBody)
 	long nRet;
 	CString strEventName,strMsg;
 
-	//recv packet ex) ERS0017|1000|D/A|
-	if(strCEID == L"1000" ) // LOSS CODE REQ (1000)
+	if(strCEID == L"1000" ) // LOSS CODE REQ (1000) - rcv ex)  ERS0017|1000|D/A|
 	{
 		nCEID = (long)_wtoi(strCEID);
 		strEventName = L"LOSS CODE REQ";
@@ -651,7 +674,7 @@ int CFAIS_GEM_AgentDlg::SendERS(CString strPacketBody)
 		m_XGem.GEMSetVariable(1, &nVID, &bstr);
 		SysFreeString(bstr);
 	}
-	else if(strCEID == L"1100" ) // MGZ Read (1000) - ERS0041|1100|IMS73225|HPBD-D1572_X_5_3_X|
+	else if(strCEID == L"1100" ) // MGZ Read (1100) - ERS0041|1100|IMS73225|HPBD-D1572_X_5_3_X|
 	{
 		nCEID = (long)_wtoi(strCEID);
 		strEventName = L"MGZ Read";
@@ -673,7 +696,88 @@ int CFAIS_GEM_AgentDlg::SendERS(CString strPacketBody)
 		bstr = strValue.AllocSysString();
 		m_XGem.GEMSetVariable(1, &nVID, &bstr);
 		SysFreeString(bstr);
+	}
+	else if(strCEID == L"1200" ) // SUB Load (1200) - ERS0040|1200|R303571724IK1011707240FEDI|
+	{
+		nCEID = (long)_wtoi(strCEID);
+		strEventName = L"SUB Load";
+		
+		nIdx = strSV.Find(L"|");
+		strValue = strSV.Left(nIdx);
+		nIdxPrev = nIdx;
 
+		nVID = 1103; //SUB_ID(ASCII) -  R303571724IK1011707240FEDI
+		bstr = strValue.AllocSysString();
+		m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		SysFreeString(bstr);
+	}
+	else if(strCEID == L"1300" ) // SUBMAP Upload (1300) - ERS0298|1300|R303571724IK1011707240FEDI|7|20|5|00220000000002020000000000022000000000000000000000000000020000000000000000000200|TCRHE86A|c0c00202c0c0c0c0c0c0c0c0c002c002c0c0c0c0c0c0c0c0c0c0c00202c0c0c0c0c0c0c0c0c0c0c0c0c0c0c004c0c0c0c0c0c0c0c0c0c0c0c002c0c004c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c002c0c0|
+	{
+		nCEID = (long)_wtoi(strCEID);
+		strEventName = L"SUBMAP Upload";
+		
+		nIdx = strSV.Find(L"|");
+		strValue = strSV.Left(nIdx);
+		nIdxPrev = nIdx;
+
+		nVID = 1103; //SUB_ID(ASCII) -  R303571724IK1011707240FEDI
+		bstr = strValue.AllocSysString();
+		m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		SysFreeString(bstr);
+
+		nIdx = strSV.Find(L"|",nIdxPrev+1);
+		strValue = strSV.Mid(nIdxPrev+1, nIdx-nIdxPrev -1);
+		nIdxPrev = nIdx;
+
+		nVID = 1104; //ORIGIN_LOC(U1) -  7
+		bstr = strValue.AllocSysString();
+		m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		SysFreeString(bstr);
+
+		nIdx = strSV.Find(L"|",nIdxPrev+1);
+		strValue = strSV.Mid(nIdxPrev+1, nIdx-nIdxPrev -1);
+		nIdxPrev = nIdx;
+
+		nVID = 1105; //ROWS(U4) -  20
+		bstr = strValue.AllocSysString();
+		m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		SysFreeString(bstr);
+
+		nIdx = strSV.Find(L"|",nIdxPrev+1);
+		strValue = strSV.Mid(nIdxPrev+1, nIdx-nIdxPrev -1);
+		nIdxPrev = nIdx;
+
+		nVID = 1106; //COLUMNS(U4) -  5
+		bstr = strValue.AllocSysString();
+		m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		SysFreeString(bstr);
+
+		nIdx = strSV.Find(L"|",nIdxPrev+1);
+		strValue = strSV.Mid(nIdxPrev+1, nIdx-nIdxPrev -1);
+		nIdxPrev = nIdx;
+
+		nVID = 1107; //CELL_STATUS(ASCII) -  00220000000002020000000000022000000000000000000000000000020000000000000000000200
+		bstr = strValue.AllocSysString();
+		m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		SysFreeString(bstr);
+
+		nIdx = strSV.Find(L"|",nIdxPrev+1);
+		strValue = strSV.Mid(nIdxPrev+1, nIdx-nIdxPrev -1);
+		nIdxPrev = nIdx;
+
+		nVID = 1108; //LOT_ID(ASCII) -  TCRHE86A
+		bstr = strValue.AllocSysString();
+		m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		SysFreeString(bstr);
+
+		nIdx = strSV.Find(L"|",nIdxPrev+1);
+		strValue = strSV.Mid(nIdxPrev+1, nIdx-nIdxPrev -1);
+		nIdxPrev = nIdx;
+
+		nVID = 1109; //CELL_GRADE(ASCII) -  c0c00202c0c0c0c0c0c0c0c0c002c002c0c0c0c0c0c0c0c0c0c0c00202c0c0c0c0c0c0c0c0c0c0c0c0c0c0c004c0c0c0c0c0c0c0c0c0c0c0c002c0c004c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c002c0c0
+		bstr = strValue.AllocSysString();
+		m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		SysFreeString(bstr);
 	}
 
 	nRet = m_XGem.GEMSetEvent(nCEID);
@@ -683,11 +787,34 @@ int CFAIS_GEM_AgentDlg::SendERS(CString strPacketBody)
         AddLogGEM(strMsg);
 		GetLog()->Debug(strMsg.GetBuffer());
     }
-    else {
-		strMsg.Format(L"(ERROR)[S6F11] %s (%d) - ERR-%d",strEventName,nCEID,nRet);
-        AddLogGEM(strMsg);
-		GetLog()->Debug(strMsg.GetBuffer());
-    }
 
+	return nRet;
+}
+
+int CFAIS_GEM_AgentDlg::SendARS(CString strPacketBody)
+{
+	CString strALID = strPacketBody.Left(4);
+	CString strState = strPacketBody.Mid(5,1); //1: Alarm Set, 0: Alarm Clear
+	
+	long  nALID = _wtoi(strALID);
+
+	int nRet;
+	CString strMsg;
+
+	if(strState == L"1")
+	{
+		nRet = m_XGem.GEMSetAlarm(nALID, 1); //state (0 : clear, 1: detect)
+	}
+	else if (strState == L"0")
+	{
+		nRet = m_XGem.GEMSetAlarm(nALID, 0);
+	}
+
+	if(nRet == 0)
+	{
+		strMsg.Format(L"[S5F1] %d (%s)", nALID, strState);
+		AddLogGEM(strMsg);
+	}
+        
 	return nRet;
 }
