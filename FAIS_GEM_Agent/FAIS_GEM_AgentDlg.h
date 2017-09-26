@@ -69,6 +69,9 @@ public:
 	//2017-09-05
 	int		SendARS(CString strPacketBody);
 	afx_msg void OnBnClickedBtSvrStart();
-	//2017-09-20 ~
+	//2017-09-20
 	int 	SendERS(CString strPacketBody);
+	//2017-09-26
+	void eSECSMessageReceivedExgemctrl1(long nObjectID, long nStream, long nFunction, long nSysbyte);
+	CString BSTR2CString(BSTR bstr);
 };
