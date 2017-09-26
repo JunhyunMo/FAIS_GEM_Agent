@@ -382,12 +382,6 @@ long CFAIS_GEM_AgentDlg::XGemStop()
 
 void CFAIS_GEM_AgentDlg::OnBnClickedBtStop()
 {
-//for test	
-	//long nAlId = 9192;
-	//m_XGem.GEMSetAlarm(nAlId, 1); //Alarm Set
-
-	//m_XGem.GEMSetAlarm(nAlId, 0); //Alarm Clear
-
 	XGemStop();
 }
 
@@ -778,6 +772,112 @@ int CFAIS_GEM_AgentDlg::SendERS(CString strPacketBody)
 		bstr = strValue.AllocSysString();
 		m_XGem.GEMSetVariable(1, &nVID, &bstr);
 		SysFreeString(bstr);
+	}
+	else if(strCEID == L"1400" ) //2017-09-26 Inspection Result (1) - Monitoring Sheet (?)
+	{
+		nCEID = (long)_wtoi(strCEID);
+		strEventName = L"Inspection Result (1)";
+		
+		nIdx = strSV.Find(L"|");
+		strValue = strSV.Left(nIdx);
+		nIdxPrev = nIdx;
+
+		nVID = 1103; //SUB_ID(ASCII) 
+		bstr = strValue.AllocSysString();
+		m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		SysFreeString(bstr);
+
+		nIdx = strSV.Find(L"|",nIdxPrev+1);
+		strValue = strSV.Mid(nIdxPrev+1, nIdx-nIdxPrev -1);
+		nIdxPrev = nIdx;
+
+		nVID = 1110; //OPER(ASCII) 
+		bstr = strValue.AllocSysString();
+		m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		SysFreeString(bstr);
+
+		nIdx = strSV.Find(L"|",nIdxPrev+1);
+		strValue = strSV.Mid(nIdxPrev+1, nIdx-nIdxPrev -1);
+		nIdxPrev = nIdx;
+
+		nVID = 1111; //SAMPLE_QTY(U4) 
+		bstr = strValue.AllocSysString();
+		m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		SysFreeString(bstr);
+
+		nIdx = strSV.Find(L"|",nIdxPrev+1);
+		strValue = strSV.Mid(nIdxPrev+1, nIdx-nIdxPrev -1);
+		nIdxPrev = nIdx;
+
+		nVID = 1112; //DEFECT_QTY(U4) 
+		bstr = strValue.AllocSysString();
+		m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		SysFreeString(bstr);
+
+		nIdx = strSV.Find(L"|",nIdxPrev+1);
+		strValue = strSV.Mid(nIdxPrev+1, nIdx-nIdxPrev -1);
+		nIdxPrev = nIdx;
+
+		nVID = 1113; //COMMENT(ASCII) 
+		bstr = strValue.AllocSysString();
+		m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		SysFreeString(bstr);
+	}
+	else if(strCEID == L"1500" ) //2017-09-26 Inspection Result (2) - Measurement (?)
+	{
+		nCEID = (long)_wtoi(strCEID);
+		strEventName = L"Inspection Result (2)";
+		
+		nIdx = strSV.Find(L"|");
+		strValue = strSV.Left(nIdx);
+		nIdxPrev = nIdx;
+
+		nVID = 1103; //SUB_ID(ASCII) 
+		bstr = strValue.AllocSysString();
+		m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		SysFreeString(bstr);
+
+		nIdx = strSV.Find(L"|",nIdxPrev+1);
+		strValue = strSV.Mid(nIdxPrev+1, nIdx-nIdxPrev -1);
+		nIdxPrev = nIdx;
+
+		nVID = 1110; //OPER(ASCII) 
+		bstr = strValue.AllocSysString();
+		m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		SysFreeString(bstr);
+
+		nIdx = strSV.Find(L"|",nIdxPrev+1);
+		strValue = strSV.Mid(nIdxPrev+1, nIdx-nIdxPrev -1);
+		nIdxPrev = nIdx;
+
+		nVID = 1111; //SAMPLE_QTY(U4) 
+		bstr = strValue.AllocSysString();
+		m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		SysFreeString(bstr);
+
+		////MEASURE_VALUE LIST - data type U4 나중에 현업 확인 - 3D 측정값? float x.xx - 2017.09.25 미팅시 청주 현업 engr' ment -  
+		nVID = 1114; 
+		long nObjId = 0;
+
+		m_XGem.MakeObject(&nObjId);
+
+		nIdx = strSV.Find(L"|",nIdxPrev+1);
+		strValue = strSV.Mid(nIdxPrev+1, nIdx-nIdxPrev -1);
+		nIdxPrev = nIdx;
+		int nListDataCount = _wtoi(strValue); //리스트포함 데이터 수량
+		m_XGem.SetList(nObjId, nListDataCount);
+		int i; double d;
+		for( i = 0; i < nListDataCount; i++ )
+		{
+			nIdx = strSV.Find(L"|",nIdxPrev+1);
+			strValue = strSV.Mid(nIdxPrev+1, nIdx-nIdxPrev -1);
+			nIdxPrev = nIdx;
+			d = _wtoi(strValue);
+			m_XGem.SetU4(nObjId,&d,1);
+		}
+	
+		m_XGem.GEMSetVariables(nObjId, nVID);
+		
 	}
 
 	nRet = m_XGem.GEMSetEvent(nCEID);
