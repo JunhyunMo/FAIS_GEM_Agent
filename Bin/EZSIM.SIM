@@ -1,0 +1,1765 @@
+S1F1W.	/* ARE YOU THERE REQUEST */
+
+S1F2	/* ONLINE DATA */
+<L   
+   <A "HOST"> 	/* MDLN */
+   <A "V 1.0"> 	/* SOFTREV */
+>.
+
+S1F3W	/* SELECTED EQUIPMENT STATUS REQUEST */
+<L
+>.
+
+S1F3W	/* SELECTED EQUIPMENT STATUS REQUEST */
+<L   
+   <U4 1010> 	/* SVID */
+>.
+
+S1F3W	/*(SKH FCB LOADER) EQP INFORMATION REQUEST*/
+<L   
+   <U4 7002> 	/*[SVID]*/
+>.
+
+S1F4	/* SELECTED EQUIPMENT STATUS DATA */
+<L   
+   <I2 20> 	/* SV */
+>.
+
+S1F4	/*(SKH FCB LOADER) EQP INFORMATION SEND*/
+<L   
+   <A "HAAA-A0000-1_1.PRD"> 	/* CURRENT RECIPE NAME*/
+   <A "ICM12345"> 	/* CASSETTE ID*/
+   <A "IMS12345"> 	/* LOADING MAGAZINE ID (OR BLANK)*/
+   <A "LOT1234-012"> 	/* WAFER ID (OR BLANK)*/
+   <A "R12345671012ABCDEF"> 	/* MATERIAL ID (FLUX: OR BLANK)*/
+>.
+
+S1F11W	/* STATUS VARIABLE NAMELIST REQUEST */
+<L
+>.
+
+S1F11W	/* STATUS VARIABLE NAMELIST REQUEST */
+<L   
+   <U4 1010> 	/* SVID */
+>.
+
+S1F12	/* STATUS VARIABLE NAMELIST REPLY */
+<L   
+   <L      
+      <U4 1> 	/* SVID   */
+      <A "SVNAME1"> 	/* SVNAME */
+      <A "UNITS"> 	/* UNITS  */
+   >
+>.
+
+S1F13W	/* ESTABLISH COMMUNICATION REQUEST */
+<L
+>.
+
+S1F14	/* ESTABLISH COMMUNICATION REQUEST ACK */
+<L   
+   <B 0x00> 	/* COMMACK */
+   <L      
+      <A "HOST "> 	/* MDLN */
+      <A "V 0.1 "> 	/* SOFTREV */
+   >
+>.
+
+S1F15W.	/* REQUEST OFFLINE */
+
+S1F16	/* OFFLINE ACK */
+<B 0x00> 	/* OFLACK */.
+
+S1F17W.	/* REQUEST ONLINE */
+
+S1F18	/* ONLINE ACK */
+<B 0x00> 	/* ONLACK */.
+
+S2F13W.	/* EQUIPMENT COSTANT REQUEST (ALL) */
+
+S2F13W	/* EQUIPMENT COSTANT REQUEST */
+<L   
+   <U4 3001> 	/* ECID */
+>.
+
+S2F14	/* EQUIPMENT CONSTANT DATA */
+<L   
+   <I2 20> 	/* ECV */
+>.
+
+S2F15W	/* NEW EQUIPMENT CONSTANT SEND */
+<L   
+   <L      
+      <U4 3007> 	/* ECID */
+      <A "5"> 	/* ECV */
+   >
+>.
+
+S2F16	/* NEW EQUIPMENT CONSTANT ACK */
+<B 0x00> 	/* EAC */.
+
+S2F17W.	/* DATE AND TIME REQUEST */
+
+S2F18	/* DATE AND TIME DATA */
+<A "2008010203040500"> 	/* TIME */.
+
+S2F23W	/* TRACE INITIALIZE SEND */
+<L   
+   <U4 1> 	/* TRID */
+   <A "000001"> 	/* DSPER (DATA SAMPLE PERIOD, FORMAT HHMMSS)*/
+   <U4 10000> 	/* TOTSMP (TOTAL SAMPLES TO BE MADE)*/
+   <U4 1> 	/* REPGSZ (REPORTING GROUP SIZE) */
+   <L      
+      <U4 2010>
+      <U4 2210>
+      <U4 2220>
+      <U4 2230>
+      <U4 2240>
+   >
+>.
+
+S2F23W	/* TRACE INITIALIZE SEND (TERMINATE) */
+<L   
+   <U4 1> 	/* TRID */
+   <A "000001"> 	/* DSPER */
+   <U4 0> 	/* TOTSMP */
+   <U4 1> 	/* REPGSZ */
+   <L      
+      <U4 1020>
+      <U4 1030>
+      <U4 1040>
+      <U4 1050>
+      <U4 1060>
+   >
+>.
+
+S2F24	/* TRACE INITIALIZE ACK */
+<B 0x00> 	/* TIAACK */.
+
+S2F25W	/* LOOPBACK DIAGNOSTIC REQUEST */
+<B 0x00 0x01 0x02 0x03 0x04 0x05 0x06 0x07 0x08 0x09 0x0A 0x0B 0x0C 0x0D 0x0E 0x0F 0x10 0x11 0x12 0x13 
+      0x14 0x15 0x16 0x17 0x18 0x19 0x1A 0x1B 0x1C 0x1D 0x1E 0x1F 0xF0 0xF1 0xF2 0xF3 0xF4 0xF5 0xF6 0xF7 
+      0xF8 0xF9 0xFA 0xFB 0xFC 0xFD 0xFE 0xFF> 	/* ABS */.
+
+S2F26	/* LOOPBACK DISGNOSTIC DATA */
+<B 0x00 0x01 0x02 0x03 0x04 0x05 0x06 0x07 0x08 0x09 0x0A 0x0B 0x0C 0x0D 0x0E 0x0F 0x10 0x11 0x12 0x13 
+      0x14 0x15 0x16 0x17 0x18 0x19 0x1A 0x1B 0x1C 0x1D 0x1E 0x1F 0xF0 0xF1 0xF2 0xF3 0xF4 0xF5 0xF6 0xF7 
+      0xF8 0xF9 0xFA 0xFB 0xFC 0xFD 0xFE 0xFF> 	/* ABS */.
+
+S2F29W	/* EQUIPMENT CONSTANT NAMELIST REQUEST */
+<L   
+   <U4 3001> 	/* ECID */
+   <U4 3002> 	/* ECID */
+   <U4 3003> 	/* ECID */
+   <U4 3005> 	/* ECID */
+   <U4 3006> 	/* ECID */
+   <U4 3007> 	/* ECID */
+   <U4 3008> 	/* ECID */
+   <U4 3009> 	/* ECID */
+   <U4 3010> 	/* ECID */
+>.
+
+S2F30	/* EQUIPMENT CONTANT NAMELIST */
+<L   
+   <L      
+      <U4 1> 	/* ECID */
+      <A "ULTRASONIC CURRENT"> 	/* ECNAME */
+      <U4 1> 	/* ECMIN */
+      <U4 10> 	/* ECMAX */
+      <U4 2> 	/* ECDEF */
+      <A "MA"> 	/* UNITS */
+   >
+>.
+
+S2F31W	/* DATE AND TIME SET RUQUEST */
+<A "20150903101140"> 	/* TIME */.
+
+S2F32	/* DATE AND TIME SET ACK */
+<B 0x00> 	/* TIACK */.
+
+S2F33W	/* DEFINE REPORT - WISOL WLP*/
+<L   
+   <U4 0> 	/* DATAID */
+   <L      
+      <L         
+         <U4 1300>
+         <L            
+            <U4 2220>
+         >
+      >
+      <L         
+         <U4 1200>
+         <L            
+            <U4 2210>
+            <U4 2220>
+         >
+      >
+      <L         
+         <U4 1400>
+         <L            
+            <U4 2210>
+            <U4 2220>
+         >
+      >
+      <L         
+         <U4 1500>
+         <L            
+            <U4 2220>
+            <U4 2010>
+            <U4 2230>
+         >
+      >
+      <L         
+         <U4 1600>
+         <L            
+            <U4 2210>
+            <U4 2220>
+         >
+      >
+      <L         
+         <U4 1700>
+         <L            
+            <U4 2220>
+            <U4 2230>
+            <U4 2240>
+         >
+      >
+      <L         
+         <U4 1701>
+         <L            
+            <U4 2220>
+            <U4 2230>
+            <U4 2240>
+         >
+      >
+      <L         
+         <U4 1800>
+         <L            
+            <U4 2220>
+            <U4 2230>
+            <U4 2240>
+         >
+      >
+      <L         
+         <U4 2000>
+         <L            
+            <U4 2220>
+            <U4 2230>
+            <U4 2240>
+         >
+      >
+      <L         
+         <U4 1900>
+         <L            
+            <U4 2230>
+            <U4 3110>
+            <U4 3120>
+            <U4 3130>
+            <U4 3140>
+            <U4 3150>
+            <U4 3160>
+            <U4 3170>
+            <U4 3180>
+            <U4 3190>
+            <U4 3200>
+            <U4 3210>
+            <U4 3220>
+         >
+      >
+      <L         
+         <U4 1910>
+         <L            
+            <U4 2230>
+            <U4 3230>
+         >
+      >
+      <L         
+         <U4 2600>
+         <L            
+            <U4 2210>
+            <U4 2220>
+         >
+      >
+      <L         
+         <U4 2100>
+         <L            
+            <U4 2220>
+            <U4 2230>
+            <U4 2240>
+         >
+      >
+      <L         
+         <U4 2101>
+         <L            
+            <U4 2220>
+            <U4 2230>
+            <U4 2240>
+         >
+      >
+      <L         
+         <U4 2200>
+         <L            
+            <U4 2220>
+            <U4 2230>
+            <U4 2240>
+         >
+      >
+      <L         
+         <U4 2500>
+         <L            
+            <U4 2220>
+         >
+      >
+   >
+>.
+
+S2F33W	/*DEFINE REPORT - DELETES ALL */
+<L   
+   <U4 0>
+   <L
+   >
+>.
+
+S2F34	/* DEFINE REPORT ACK */
+<B 0x00> 	/* DRACK */.
+
+S2F35W	/* LINK EVENT REPORT */
+<L   
+   <U4 0> 	/* DATAID */
+   <L      
+      <L         
+         <U4 1200> 	/* CEID */
+         <L            
+            <U4 1200> 	/* RPTID */
+         >
+      >
+      <L         
+         <U4 1300> 	/* CEID */
+         <L            
+            <U4 1300> 	/* RPTID */
+         >
+      >
+      <L         
+         <U4 1400>
+         <L            
+            <U4 1400>
+         >
+      >
+      <L         
+         <U4 1500>
+         <L            
+            <U4 1500>
+         >
+      >
+      <L         
+         <U4 1600>
+         <L            
+            <U4 1600>
+         >
+      >
+      <L         
+         <U4 1700>
+         <L            
+            <U4 1700>
+         >
+      >
+      <L         
+         <U4 1701>
+         <L            
+            <U4 1701>
+         >
+      >
+      <L         
+         <U4 1800>
+         <L            
+            <U4 1800>
+         >
+      >
+      <L         
+         <U4 1900>
+         <L            
+            <U4 1900>
+         >
+      >
+      <L         
+         <U4 1910>
+         <L            
+            <U4 1910>
+         >
+      >
+      <L         
+         <U4 2000>
+         <L            
+            <U4 2000>
+         >
+      >
+      <L         
+         <U4 2100>
+         <L            
+            <U4 2100>
+         >
+      >
+      <L         
+         <U4 2101>
+         <L            
+            <U4 2101>
+         >
+      >
+      <L         
+         <U4 2200>
+         <L            
+            <U4 2200>
+         >
+      >
+      <L         
+         <U4 2500>
+         <L            
+            <U4 2500>
+         >
+      >
+      <L         
+         <U4 2600>
+         <L            
+            <U4 2600>
+         >
+      >
+   >
+>.
+
+S2F35W	/*LINK EVENT REPORT - DELETE ALL*/
+<L   
+   <U4 0>
+   <L
+   >
+>.
+
+S2F36	/* LINK EVENT REPORT ACK */
+<B 0x00> 	/* LRACK */.
+
+S2F37W	/* ENABLE/DISABLE EVENT REPORT - ENABLE ALL*/
+<L   
+   <BOOL 0x01> 	/* CEED */
+   <L
+   >
+>.
+
+S2F37W	/* ENABLE/DISABLE EVENT REPORT - ENABLE*/
+<L   
+   <BOOL 0x01> 	/* CEED */
+   <L      
+      <U4 4000> 	/* CEID */
+   >
+>.
+
+S2F37W	/* ENABLE/DISABLE EVENT REPORT - DISABLE*/
+<L   
+   <BOOL 0x01> 	/* CEED */
+   <L
+   >
+>.
+
+S2F38	/* ENABLE/DISABLE EVENT REPORT ACK */
+<B 0x00> 	/* ERACK */.
+
+S2F39W	/* MULTI-BLOCK INQUIRE */
+<L   
+   <U4 0> 	/* DATAID */
+   <U4 512> 	/* DATALENGTH */
+>.
+
+S2F40	/* MULTI-BLOCK GRANT */
+<B 0x00> 	/* GRANT */.
+
+S2F41W	/*(SKH FCB LOADER) LOAD_MGZ_CONFIRM*/
+<L   
+   <A "LOAD_MGZ_CONFIRM"> 	/* [RCMD]*/
+   <L      
+      <L         
+         <A "MGZ-ID"> 	/*[CPNAME]*/
+         <A "MI000001"> 	/*[CPVAL1] MAGAZINE ID (OR BLANK)*/
+      >
+      <L         
+         <A "CONFIRM-FLAG"> 	/* [CPNAME]*/
+         <A "T"> 	/*[CPVAL2]*/
+      >
+   >
+>.
+
+S2F41W	/*(SKH FCB LOADER) SUB_CONFIRM*/
+<L   
+   <A "SUB_CONFIRM">
+   <L      
+      <L         
+         <A "SUB_ID"> 	/* MID*/
+         <A "R12345671020ABCDE"> 	/* SUBSTRATE ID ( BLINK)*/
+      >
+      <L         
+         <A "CONFIRM-FLAG">
+         <A "T">
+      >
+   >
+>.
+
+S2F41W	/*(SKH FCB UNLOADER) SUB_CONFIRM*/
+<L   
+   <A "SUB_CONFIRM">
+   <L      
+      <L         
+         <A "SUB_ID"> 	/* MID*/
+         <A "R12345671020ABCDE"> 	/* SUBSTRATE ID ( BLINK)*/
+      >
+      <L         
+         <A "CONFIRM-FLAG">
+         <A "T"> 	/* RESULT (TRUE / FALSE)*/
+      >
+      <L         
+         <A "Y"> 	/* LOT CHANGE FLAG (Y/N)*/
+      >
+   >
+>.
+
+S2F41W	/*(SKH FCB UNLOADER) SUB_UNLOAD_CONFIRM*/
+<L   
+   <A "SUB_UNLOAD_CONFIRM"> 	/*RCMD*/
+   <L      
+      <L         
+         <A "SUB_ID"> 	/* MID*/
+         <A "R12345671020ABCDE"> 	/* SUBSTRATE ID ( BLINK)*/
+      >
+      <L         
+         <A "CONFIRM-FLAG">
+         <A "T"> 	/* RESULT (TRUE / FALSE)*/
+      >
+   >
+>.
+
+S2F41	/*(SKH FCB UNLOADER) UNLOAD_MGZ_CONFIRM*/
+<L   
+   <A "UNLOAD_MGZ_CONFIRM"> 	/*[RCMD]*/
+   <L      
+      <L         
+         <A "MGZ-ID"> 	/* [CPNAME]*/
+         <A "MI000001"> 	/*[CPVAL1]MAGAZINE ID ( BLINK)*/
+      >
+      <L         
+         <A "CONFIRM-FLAG">
+         <A "T">
+      >
+   >
+>.
+
+S2F41W	/*(SKH FCB COMMON) HOST DUMMY CHANGE REQUEST COMMEND SEND*/
+<L   
+   <A "DUMMY_SETUP"> 	/* [RCMD]*/
+   <L      
+      <L         
+         <A "DUMMY-CHANGE"> 	/* [CPNAME]*/
+         <U2 0> 	/* [CPVAL1] DUMMY STATUS (1: ON, 0: OFF)*/
+         <U2 1> 	/* [CPVAL1] DUMMY COUNT*/
+      >
+   >
+>.
+
+S2F41W	/*(SKH FCB LOADER)STOP*/
+<L   
+   <A "STOP"> 	/* [RCMD]*/
+   <L
+   >
+>.
+
+S2F41W	/*(FAIS) LOSS_CODE*/
+<L   
+   <A "LOSS_CODE"> 	/* [RCMD]*/
+   <L      
+      <L         
+         <A "LOSS_CODE_COUNT"> 	/* [CPNAME]*/
+         <U2 2> 	/* [CPVAL] */
+      >
+      <L         
+         <L            
+            <L               
+               <A "LOSS_CODE">
+               <A "ADFM">
+            >
+            <L               
+               <A "GRADE_CODE">
+               <A "01">
+            >
+            <L               
+               <A "DESC">
+               <A "ADHESIVE(..,WBL)...   ">
+            >
+         >
+      >
+   >
+>.
+
+S2F41W	/*(FAIS)STOP*/
+<L   
+   <A "STOP"> 	/* [RCMD]*/
+   <L
+   >
+>.
+
+S2F41W	/*(FAIS)SUB_CONFIRM*/
+<L   
+   <A "SUB_CONFIRM"> 	/*RCMD*/
+   <L      
+      <L         
+         <A "SUB-ID">
+         <A "R303571724IK1011707240FED">
+      >
+      <L         
+         <A "CONFIRM-FLAG">
+         <A "T">
+      >
+   >
+>.
+
+S2F41W	/*(FAIS)MGZ_READ_CONFIRM*/
+<L   
+   <A "MGZ_READ_CONFIRM">
+   <L      
+      <L         
+         <A "MGZ-ID">
+         <A "IMS73225">
+      >
+      <L         
+         <A "CONFIRM-FLAG">
+         <A "T">
+      >
+      <L         
+         <A "LOT-ID">
+         <A "TCS1524QA">
+      >
+      <L         
+         <A "RECIPE-NAME">
+         <A "HPBW-D0001_1_1">
+      >
+      <L         
+         <A "SAMPLE_QTY">
+         <A "100">
+      >
+      <L         
+         <A "USL">
+         <A "200">
+      >
+      <L         
+         <A "LSL">
+         <A "300">
+      >
+      <L         
+         <A "UCL">
+         <A "400">
+      >
+      <L         
+         <A "LCL">
+         <A "500">
+      >
+      <L         
+         <A "MCP-NO">
+         <A "A-093TD">
+      >
+      <L         
+         <A "MODE">
+         <A "DDR4">
+      >
+      <L         
+         <A "DENSITY">
+         <A "8G">
+      >
+      <L         
+         <A "TECH">
+         <A "PL">
+      >
+      <L         
+         <A "PKG1">
+         <A "FBGA">
+      >
+      <L         
+         <A "PKG2">
+         <A "DDP">
+      >
+      <L         
+         <A "LEAD">
+         <A "78">
+      >
+      <L         
+         <A "SUB_COUNT">
+         <A "2">
+      >
+      <L         
+         <L            
+            <L               
+               <A "SUB_ID">
+               <A "R303369813IK1011708080F15">
+            >
+            <L               
+               <A "OPER">
+               <A "D/A1">
+            >
+            <L               
+               <A "EQP_ID">
+               <A "D100">
+            >
+         >
+      >
+   >
+>.
+
+S2F42	/* HOST COMMAND ACK */
+<L   
+   <B 0x00> 	/* HCACK */
+   <L
+   >
+>.
+
+S2F42	/*HOST COMMAND NAK*/
+<L   
+   <B 0x02> 	/* HCNAK */
+   <L
+   >
+>.
+
+S2F43W	/* RESET SPOOLING STREAM AND FUNCTIONS */
+<L   
+   <L      
+      <U1 5> 	/* STRID */
+      <L         
+         <U1 1> 	/* FCNID */
+      >
+   >
+   <L      
+      <U1 6> 	/* STRID */
+      <L         
+         <U1 1> 	/* FCNID */
+         <U1 11> 	/* FCNID */
+      >
+   >
+>.
+
+S2F44	/* RESET SPOOLING ACK */
+<L   
+   <B 0x01> 	/* RSACK */
+   <L      
+      <L         
+         <U1 2> 	/* STRID */
+         <B 0x01> 	/* STRACK */
+         <L            
+            <U1 5> 	/* FCNID */
+         >
+      >
+      <L         
+         <U1 7> 	/* STRID */
+         <B 0x01> 	/* STRACK */
+         <L            
+            <U1 3> 	/* FCNID */
+            <U1 5> 	/* FCNID */
+         >
+      >
+   >
+>.
+
+S2F45W	/* DEFINE VARIABLE LIMIT ATTRIBUTES */
+<L   
+   <U4 0> 	/* DATAID */
+   <L      
+      <L         
+         <U4 11000> 	/* VID */
+         <L            
+            <L               
+               <B 0x01> 	/* LIMITID */
+               <L                  
+                  <F4 11.000000> 	/* UPPERDB */
+                  <F4 10.000000> 	/* LOWERDB */
+               >
+            >
+            <L               
+               <B 0x02> 	/* LIMITID */
+               <L                  
+                  <F4 21.000000> 	/* UPPERDB */
+                  <F4 20.000000> 	/* LOWERDB */
+               >
+            >
+         >
+      >
+   >
+>.
+
+S2F46	/* VARIABLE LIMIT ATTRIBUTE ACK */
+<L   
+   <B 0x01> 	/* VLAACK */
+   <L      
+      <L         
+         <U4 1> 	/* VID */
+         <B 0x04> 	/* LVACK */
+         <L            
+            <B 0x01> 	/* LIMITID */
+            <B 0x02> 	/* LIMITACK */
+         >
+      >
+   >
+>.
+
+S2F47W	/* VARIABLE LIMIT ATTRIBUTE REQUEST */
+<L   
+   <U4 1010> 	/* VID */
+   <U4 1020> 	/* VID */
+>.
+
+S2F48	/* VARIABLE LIMIT ATTRIBUTES SEND */
+<L   
+   <L      
+      <U4 1> 	/* VID */
+      <L         
+         <A "THICKNESS"> 	/* UNITS */
+         <U4 200> 	/* LIMITMIN */
+         <U4 300> 	/* LIMITMAX */
+         <L            
+            <L               
+               <B 0x01> 	/* LIMITID */
+               <U4 230> 	/* UPPERDB */
+               <U4 220> 	/* LOWERDB */
+            >
+            <L               
+               <B 0x02> 	/* LIMITID */
+               <U4 270> 	/* UPPERDB */
+               <U4 260> 	/* LOWERDB */
+            >
+         >
+      >
+   >
+   <L      
+      <U4 2> 	/* VID */
+      <L         
+         <A "DIAMETER"> 	/* UNITS */
+         <U1 40> 	/* LIMITMIN */
+         <U1 55> 	/* LIMITMAX */
+         <L            
+            <L               
+               <B 0x03> 	/* LIMITID */
+               <U1 45> 	/* UPPERDB */
+               <U1 50> 	/* LOWERDB */
+            >
+         >
+      >
+   >
+>.
+
+S3F17W	/* CARRIER ACTION REQUEST */
+<L   
+   <U4 0> 	/* DATAID */
+   <A "PROCEEDWITHCARRIER"> 	/* CARRIERACTION */
+   <A "CARRIERID"> 	/* CARRIERID */
+   <B 0x01> 	/* PTN */
+   <L
+   >
+>.
+
+S3F17W	/* CARRIER ACTION REQUEST */
+<L   
+   <U4 0> 	/* DATAID */
+   <A "CANCELCARRIER"> 	/* CARRIERACTION */
+   <A "CARRIERID"> 	/* CARRIERID */
+   <B 0x01> 	/* PTN */
+   <L
+   >
+>.
+
+S3F18	/* CARRIER ACTION ACKNOWLEDGE */
+<L   
+   <U1 0> 	/* CAACK */
+   <L
+   >
+>.
+
+S5F1W	/* ALARM REPORT SEND */
+<L   
+   <B 0x06> 	/* ALCD */
+   <U4 1> 	/* ALID */
+   <A "OPERATION ERROR "> 	/* ALTX */
+>.
+
+S5F1W	/*(SKH FCB COMMON) ALARM SET REPORT SEND*/
+<L   
+   <B 0x30> 	/*[ALCD]*/
+   <U4 6006> 	/*[ALID]*/
+   <A "MANUAL-EFO-OPEN"> 	/*[ALTX]*/
+>.
+
+S5F1W	/*(SKH FCB COMMON) ALARM CLEAR REPORT SEND*/
+<L   
+   <B 0x01> 	/*[ALCD]*/
+   <U4 6006> 	/*[ALID]*/
+   <A "MANUAL-EFO-OPEN"> 	/*[ALTX]*/
+>.
+
+S5F2	/* ALARM REPORT ACK */
+<B 0x00> 	/* ACKC5 */.
+
+S5F3W	/* ENABLE/DISALBE ALARM SEND */
+<L   
+   <B 0x80> 	/* ALED */
+   <U4 1000> 	/* ALID */
+>.
+
+S5F4	/* ENABLE/DISABLE ALARM ACK */
+<B 0x00> 	/* ACKC5 */.
+
+S5F5W.	/* LIST ALARMS REQUEST */
+
+S5F6	/* LIST ALARM DATA */
+<L   
+   <L      
+      <B 0x06> 	/* ALCD */
+      <U4 1> 	/* ALID */
+      <A "EQUIPMENT ERROR_ "> 	/* ALTX */
+   >
+>.
+
+S5F7W.	/* LIST ENABLED ALARM REQUEST */
+
+S5F8	/* LIST ENABLED ALARM DATA */
+<L   
+   <L      
+      <B 0x06> 	/* ACLD */
+      <U4 1> 	/* ALID */
+      <A "EQUIPMENT ERROR_ "> 	/* ALTX */
+   >
+>.
+
+S6F1W	/* TRACE DATA SEND */
+<L   
+   <U4 1> 	/* TRID */
+   <U4 1> 	/* SMPLN */
+   <A "2015090118390500"> 	/* STIME */
+   <L      
+      <U4 1010> 	/* SV */
+      <I2 2> 	/* SV */
+      <A "3"> 	/* SV */
+      <I1 4> 	/* SV */
+      <A "5"> 	/* SV */
+   >
+>.
+
+S6F2	/* TRACE DATA ACK */
+<B 0x00> 	/* ACKC6 */.
+
+S6F5W	/* MULTI-BLOCK DATA SEND INQUIRE */
+<L   
+   <U4 1> 	/* DATAID */
+   <U4 4096> 	/* DATALENGTH */
+>.
+
+S6F6	/* MULTI-BLOCK GRANT */
+<B 0x00> 	/* GRANT6 */.
+
+S6F11W	/*(SKH FCB LOADER)SUBSTRATE LOAD CHECKER - SUB_LOAD*/
+<L   
+   <U2 105> 	/*[DATAID]*/
+   <U4 501> 	/*[CEID]*/
+   <L      
+      <L         
+         <U4 501> 	/* [RPTID]*/
+         <L            
+            <A "MI000001"> 	/*LOAD-MGZ ID (OR BLANK)*/
+            <U2 3> 	/* LOAD-MGZ SLOT NO*/
+            <A "R123456789"> 	/* SUBSTRATE ID (OR ERROR)*/
+            <A "0"> 	/* LOAD_TYPE*/
+         >
+      >
+   >
+>.
+
+S6F11W	/*(SKH FCB LOADER) LOAD-MAGAZINE-OUTPUT SEND*/
+<L   
+   <U2 104> 	/*[DATAID]*/
+   <U4 302> 	/*[CEID]*/
+   <L      
+      <L         
+         <U4 302> 	/*[RPTID]*/
+         <L            
+            <A "MI000001"> 	/* LOADING MAGAZINE ID (OR BLANK)*/
+         >
+      >
+   >
+>.
+
+S6F11W	/*(SKH FCB LOADER)SUBSTRATE UNLOAD REQUEST*/
+<L   
+   <U2 106>
+   <U4 502>
+   <L      
+      <L         
+         <U4 502>
+         <L            
+            <A "R12345623"> 	/* SUB-ID*/
+            <A "1"> 	/*SUB*/
+            <A "1200"> 	/* TOTAL BONDING DIE QTY (LAST WIRE DIE)*/
+            <A "20"> 	/* GOOD QTY*/
+            <A "001010"> 	/* RUN TIME:(2) (2) (2)*/
+            <A "2"> 	/* BOND FORCE*/
+            <A "2"> 	/*NEEDLE UP HEIGHT 1*/
+            <A "2"> 	/* NEEDLE UP HEIGHT 2*/
+            <A "2"> 	/* NEEDLE UP HEIGHT 3*/
+            <A "2"> 	/* BONDING DELAY TIME*/
+            <A "2"> 	/*FLUX DIPPING TIME*/
+            <A "2"> 	/* AIR BLOW PRESSURE*/
+            <L               
+               <L                  
+                  <A "ABCDEFG-1"> 	/* WAFER ID*/
+                  <A "25-1"> 	/* WAFER X-Y(1-1)*/
+                  <A "2-1"> 	/*SUBSTRATE X-Y(1-1)*/
+                  <A "20121010132010"> 	/* CHIP START TIME*/
+                  <U2 1> 	/*  CHIP  STACK COUNT*/
+                  <U2 1> 	/* BIN CODE*/
+                  <U2 0> 	/* RETRY COUNT*/
+                  <A "0"> 	/* BONDER HEAD*/
+               >
+            >
+         >
+      >
+   >
+>.
+
+S6F11W	/*(SKH FCB LOADER) SUBMAP UPLOAD */
+<L   
+   <U2 106>
+   <U4 502>
+   <L      
+      <L         
+         <U4 502>
+         <L            
+            <A "R12345623"> 	/* SUB-ID*/
+            <A "1"> 	/* ORIGIN LOCATION*/
+            <A "5"> 	/*ROW*/
+            <A "18"> 	/*COLUMNS*/
+            <A "000000000DDDD0000."> 	/* CELL STATUS()*/
+            <A "33333333DDDD33433."> 	/* CELL GRADE()*/
+         >
+      >
+   >
+>.
+
+S6F11W	/*(SKH FCB UNLOADER) SUBSTRATE LOAD CHECKER*/
+<L   
+   <U2 105>
+   <U4 501>
+   <L      
+      <L         
+         <U4 501>
+         <L            
+            <A "R123456789"> 	/* SUBSTRATE ID ( BLINK)*/
+            <A "1"> 	/* CONVEYOR NO ( BLINK)*/
+            <A "HPBD-D1234"> 	/* CURRENT RECIPE NAME*/
+         >
+      >
+   >
+>.
+
+S6F11W	/*(SKH FCB UNLOADER) SUBSTRATE UNLOAD REQUEST*/
+<L   
+   <U2 106> 	/*[DATAID]*/
+   <U4 502> 	/*[CEID]*/
+   <L      
+      <L         
+         <U4 502> 	/*[RPTID]*/
+         <L            
+            <A "R12345623"> 	/* SUB-ID*/
+            <A "Y"> 	/* MAP_DOWN(Y/N)*/
+            <A "MI1234567"> 	/* UNLD-MGZ ID*/
+            <A "2"> 	/* UNLD-MGZ SLOT*/
+            <A "1200"> 	/* TOTAL QTY ()*/
+            <A "1200"> 	/* GOOD_QTY ()*/
+         >
+      >
+   >
+>.
+
+S6F11W	/*(SKH FCB UNLOADER)SUB-MAP UNLOAD */
+<L   
+   <U2 106> 	/*[DATAID]*/
+   <U4 502> 	/* [CEID]*/
+   <L      
+      <L         
+         <U4 502> 	/* [RPTID]*/
+         <L            
+            <A "R12345623"> 	/* SUB-ID*/
+            <A "1"> 	/* ORIGIN LOCATION*/
+            <A "5"> 	/* ROW*/
+            <A "18"> 	/* COLUMNS*/
+            <A "00000XXXXX0000X."> 	/* CELL STATUS()*/
+            <A "33333XXXXX33A3X."> 	/* CELL GRADE*/
+         >
+      >
+   >
+>.
+
+S6F11	/*(SKH FCB UNLOADER) UNLOAD-MAGAZINE INPUT SEND*/
+<L   
+   <U2 107> 	/*[DATAID]*/
+   <U4 401> 	/* [CEID]*/
+   <L      
+      <L         
+         <U4 401> 	/* [RPTID]*/
+         <L            
+            <A "MI1234567"> 	/* UNLOADING MAGAZINE ID ( BLINK)*/
+         >
+      >
+   >
+>.
+
+S6F11W	/*(SKH FCB UNLOADER) UNLOAD-MAGAZINE-OUTPUT REQUEST*/
+<L   
+   <U2 108> 	/*[DATAID]*/
+   <U4 402> 	/*[CEID]*/
+   <L      
+      <L         
+         <U4 402> 	/* [RPTID]*/
+         <L            
+            <A "MI1234567"> 	/* UNLOAD-MGZ ID ( BLINK)*/
+            <U4 20> 	/* SUBSTRATE COUNT*/
+            <L               
+               <L                  
+                  <L                     
+                     <A "1"> 	/* SLOT NO*/
+                     <A "2"> 	/* SLOT NO*/
+                  >
+               >
+               <L                  
+                  <L                     
+                     <A "R12345623"> 	/* SUBSTRATE ID ( BLINK)*/
+                     <A "R12345624"> 	/* SUBSTRATE ID ( BLINK)*/
+                  >
+               >
+            >
+         >
+      >
+   >
+>.
+
+S6F11W	/*(SKH FCB COMMON) CONTROL MODE CHANGE EVENT SEND*/
+<L   
+   <U2 109> 	/*[DATAID]*/
+   <U4 803> 	/*CONTROL MODE CHANGE (803: REMOTE)*/
+   <L      
+      <L         
+         <U4 803> 	/*[RPTID]*/
+         <L            
+            <U2 65> 	/*EQUIPMENT STATUS (IDE/RUN)*/
+            <U2 1> 	/*DUMMY STATUS (1: ON, 0: OFF)*/
+            <A "5"> 	/*BIN_CODE*/
+            <A "DDPDA2.PRD"> 	/* CURRENT RECIPE NAME*/
+            <A "IC300998"> 	/* CASSETTE_ID ( BLINK)*/
+            <A "IMS28512"> 	/* LOAD_MGZ_ID ( BLINK)*/
+            <A "IMS24535"> 	/* UNLOAD_MGZ_ID ( BLINK)*/
+            <A "WLBM952-08H2"> 	/* WAFER_ID ( BLINK)*/
+         >
+      >
+   >
+>.
+
+S6F11W	/*(SKH FCB COMMON) BIN CODE CHANGE EVENT SEND*/
+<L   
+   <U2 110> 	/*[DATAID]*/
+   <U4 601> 	/*[CEID]*/
+   <L      
+      <L         
+         <U4 601> 	/*[RPTID]*/
+         <L            
+            <A "1,5"> 	/* BIN CODE SET-UP DATA*/
+            <A "DDPDA2.PRD"> 	/* CURRENT RECIPE NAME*/
+            <A "IC300998"> 	/* CASSETTE_ID ( BLINK)*/
+            <A "IMS28512"> 	/* LOAD_MGZ_ID ( BLINK)*/
+            <A "IMS24535"> 	/* UNLOAD_MGZ_ID ( BLINK)*/
+            <A "WLBM952-08H2"> 	/* WAFER_ID ( BLINK)*/
+         >
+      >
+   >
+>.
+
+S6F11W	/*(SKH FCB COMMON) DUMMY MODE CHANGE EVENT SEND*/
+<L   
+   <U2 11> 	/*[DATAID]*/
+   <U4 702> 	/* [CEID] DUMMY CHANGE CEID*/
+   <L      
+      <L         
+         <U4 702> 	/*[RPTID]*/
+         <L            
+            <U2 1> 	/*DUMMY (1: ON, 0: OFF)*/
+            <U2 1> 	/*DUMMY COUNT*/
+            <U2 65> 	/*EQ STATUS*/
+            <A "DDPDA2.PRD"> 	/* CURRENT RECIPE NAME*/
+            <U2 3> 	/* CONTROL STATUS*/
+            <A "IC300998"> 	/* CASSETTE_ID ( BLINK)*/
+            <A "IMS28512"> 	/* LOAD_MGZ_ID ( BLINK)*/
+            <A "IMS24535"> 	/* UNLOAD_MGZ_ID ( BLINK)*/
+            <A "WLBM952-08H2"> 	/* WAFER_ID ( BLINK)*/
+            <A "1,5"> 	/* BIN CODE SET-UP DATA*/
+         >
+      >
+   >
+>.
+
+S6F11W	/*(SKH FCB COMMON) DUMMY MODE CHANGE EVENT SEND*/
+<L   
+   <U2 11> 	/*[DATAID]*/
+   <U4 702> 	/* [CEID] DUMMY CHANGE CEID*/
+   <L      
+      <L         
+         <U4 702> 	/*[RPTID]*/
+         <L            
+            <U2 1> 	/* DUMMY (1: ON, 0: OFF)*/
+            <U2 1> 	/* DUMMY COUNT*/
+            <U2 65> 	/* EQ STATUS */
+            <A "DDPDA2.PRD"> 	/* [VID] CURRENT RECIPE NAME*/
+            <U2 3> 	/* CONTROL STATUS*/
+            <A "IC300998"> 	/* CASSETTE_ID ( BLINK)*/
+            <A "IMS28512"> 	/* LOAD_MGZ_ID ( BLINK)*/
+            <A "IMS24535"> 	/* UNLOAD_MGZ_ID ( BLINK)*/
+            <A "WLBM952-08H2"> 	/* WAFER_ID ( BLINK)*/
+            <A "1,5"> 	/* BIN CODE SET-UP DATA*/
+         >
+      >
+   >
+>.
+
+S6F11W	/*(SKH FCB COMMON) EQP STATUS MODE CHANGE EVENT SEND*/
+<L   
+   <U2 11> 	/*[DATAID]*/
+   <U4 701> 	/*[CEID] STATUS CHANGE CEID*/
+   <L      
+      <L         
+         <U4 701> 	/*[RPTID]*/
+         <L            
+            <U2 65> 	/* EQ STATUS */
+            <A "DDPDA2.PRD"> 	/* [VID] CURRENT RECIPE NAME*/
+            <U2 1> 	/* DUMMY (1: ON, 0: OFF)*/
+            <U2 3> 	/* CONTROL STATUS*/
+            <A "IMS28512"> 	/*[VID] LOAD_MGZ_ID ( BLINK)*/
+            <A "IMS24535"> 	/* [VID] UNLOAD_MGZ_ID ( BLINK)*/
+         >
+      >
+   >
+>.
+
+S6F12	/* EVENT REPORT ACK */
+<B 0x00> 	/* ACKC6 */.
+
+S6F13W	/* ANNOTATED EVENT REPORT SEND */
+<L   
+   <U4 0> 	/* DATAID */
+   <U4 1> 	/* CEID */
+   <L      
+      <L         
+         <U4 1> 	/* RPTID */
+         <L            
+            <L               
+               <U4 1> 	/* VID */
+               <I2 -7> 	/* V */
+            >
+            <L               
+               <U4 2> 	/* VID */
+               <U1 4> 	/* V */
+            >
+         >
+      >
+   >
+>.
+
+S6F14	/* ANNOTATED EVENT REPORT ACK */
+<B 0x00> 	/* ACKC6 */.
+
+S6F15W	/* EVENT REPORT REQUEST */
+<U4 3000> 	/* CEID */.
+
+S6F16	/* EVENT REPORT DATA */
+<L   
+   <U4 0> 	/* DATAID */
+   <U4 1> 	/* CEID */
+   <L      
+      <L         
+         <U4 1> 	/* RPTID */
+         <L            
+            <I2 -7> 	/* V */
+            <U1 4> 	/* V */
+         >
+      >
+   >
+>.
+
+S6F17W	/* ANNOTATED EVENT REPORT REQUEST */
+<U4 0> 	/* CEID */.
+
+S6F18	/* ANNOTATED EVENT REPORT DATA */
+<L   
+   <U4 0> 	/* DATAID */
+   <U4 1> 	/* CEID */
+   <L      
+      <L         
+         <U4 1> 	/* RPTID */
+         <L            
+            <L               
+               <U4 1> 	/* VID */
+               <I2 -7> 	/* V */
+            >
+            <L               
+               <U4 2> 	/* VID */
+               <U1 4> 	/* V */
+            >
+         >
+      >
+   >
+>.
+
+S6F19W	/* INDIVIDUAL REPORT REQUEST */
+<U4 3000> 	/* RPTID */.
+
+S6F20	/* INDIVIDUAL REPORT DATA */
+<L   
+   <I2 -7> 	/* V */
+   <U1 4> 	/* V */
+>.
+
+S6F21W	/* ANNOTATED INDIVIDUAL REPORT REQUEST */
+<U4 1> 	/* RPTID */.
+
+S6F22	/* ANNOTATED INDIVIDUAL REPORT DATA */
+<L   
+   <L      
+      <U4 1> 	/* VID */
+      <I2 -7> 	/* V */
+   >
+   <L      
+      <U4 2> 	/* VID */
+      <U1 4> 	/* V */
+   >
+>.
+
+S6F23W	/* REQUEST SPOOLED DATA */
+<U1 0> 	/* RSDC */.
+
+S6F24	/* REQUEST SPOOLED DATA ACK */
+<B 0x00> 	/* RSDA */.
+
+S7F1W	/* PROCESS PROGRAM LOAD INQUIRE */
+<L   
+   <A "PP01            "> 	/* PPID */
+   <U4 512> 	/* LENGTH */
+>.
+
+S7F2	/* PROCESS PROGRAM LOAD GRANT */
+<B 0x00> 	/* PPGNT */.
+
+S7F3W	/* PROCESS PROGRAM SEND */
+<L   
+   <A "PP02_TEST"> 	/* PPID */
+   <B 0x02 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 
+      0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 
+      0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0x03> 	/* PPBODY */
+>.
+
+S7F4	/* PROCESS PROGRAM ACK */
+<B 0x00> 	/* ACKC7 */.
+
+S7F5W	/* PROCESS PROGRAM REQUEST */
+<A "H876BK0"> 	/* PPID */.
+
+S7F6	/* PROCESS PROGRAM DATA */
+<L   
+   <A "PP01            "> 	/* PPID */
+   <B 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF> 	/* PPBODY */
+>.
+
+S7F17W	/* DELETE PROCESS PROGRAM SEND */
+<L   
+   <A "PP01            "> 	/* PPID */
+>.
+
+S7F18	/* DELETE PROCESS PROGRAM ACK */
+<B 0x00> 	/* ACKC7 */.
+
+S7F19W.	/* CURRENT EPPD REQUEST */
+
+S7F20	/* CURRENT EPPD DATA - WISOL WLP*/
+<L   
+   <A "H742AK0-B0"> 	/* PPID */
+   <A "H876BK0-B0"> 	/* PPID */
+   <A "H942BK0-B0"> 	/* PPID */
+   <A "HG56CJ1-B0"> 	/* PPID */
+>.
+
+S7F23W	/* FORMATTED PROCESS PROGRAM SEND */
+<L   
+   <A "PP01            "> 	/* PPID */
+   <A "EZSIM"> 	/* MDLN */
+   <A "000000"> 	/* SOFTREV */
+   <L      
+      <L         
+         <U4 1> 	/* CCODE */
+         <L            
+            <U4 100> 	/* PPARM */
+            <U4 60> 	/* PPARM */
+         >
+      >
+   >
+>.
+
+S7F24	/* FORMATTED PROCESS PROGRAM ACK */
+<B 0x00> 	/* ACKC7 */.
+
+S7F25W	/* FORMATTED PROCESS PRORAM REQUEST */
+<A "MODELINFO"> 	/* PPID */.
+
+S7F26	/* FORMATTED PROCESS PROGRAM DATA */
+<L   
+   <A "PP01            "> 	/* PPID */
+   <A "EZSIM"> 	/* MDLN */
+   <A "000000"> 	/* SOFTREV */
+   <L      
+      <L         
+         <U4 1> 	/* CCODE */
+         <L            
+            <U4 100> 	/* PPARM */
+            <U4 60> 	/* PPARM */
+         >
+      >
+   >
+>.
+
+S10F3W	/* TERMINAL DISPLAY, SINGLE */
+<L   
+   <B 0x00> 	/* TID */
+   <A "TERMINAL MESSAGE... HI !!!"> 	/* TEXT */
+>.
+
+S10F4	/* TERMINAL DISPLAY, SINGLE ACK */
+<B 0x00> 	/* ACKC10 */.
+
+S10F5W	/* TERMINAL DISPLAY, MULTI-BLOCK */
+<L   
+   <B 0x00> 	/* TID */
+   <L      
+      <A "AAAAA           "> 	/* TEXT */
+      <A "BBBBB           "> 	/* TEXT */
+      <A "CCCCC           "> 	/* TEXT */
+   >
+>.
+
+S10F6	/* TERMINAL DISPLAY, MULTI-BLOCK ACK */
+<B 0x00> 	/* ACKC10 */.
+
+S14F1W	/*(SKH FCB UNLOADER) SUBMAP REQUEST*/
+<L   
+   <A "FCB UNLOADER"> 	/*[OBJTYPE]*/
+   <A "STRIP MAP DOWNLOAD"> 	/*[OBJSPEC]*/
+   <L      
+      <A "R216103924338510060020052"> 	/*SUB_ID*/
+   >
+>.
+
+S14F2	/*(SKH FCB UNLOADER) SUBMAP DOWNLOAD*/
+<L   
+   <L      
+      <L         
+         <A "R216103924338510060010075"> 	/*[OBJID]*/
+         <L            
+            <L               
+               <A "ORIGIN LOCATION"> 	/*[ATTRID]*/
+               <U1 2> 	/*ORIGIN_LOC*/
+            >
+            <L               
+               <A "ROWS"> 	/*[ATTRID]*/
+               <U4 5> 	/*[ROWS]*/
+            >
+            <L               
+               <A "COLUMNS"> 	/*[ATTRID]*/
+               <U4 18> 	/*[COLUMNS]*/
+            >
+            <L               
+               <A "CELLSTATUS"> 	/*[ATTRID]*/
+               <A "200000000000000000000000000000000000000000000000000000000000000000000000000000000000000002"> 	/*[CELL_STATUS]*/
+            >
+            <L               
+               <A "LOT_ID"> 	/*[ATTRID]*/
+               <A "TEST"> 	/* [LOT_ID]*/
+            >
+         >
+      >
+   >
+   <L      
+      <U1 0> 	/* [OBJACK]*/
+      <L
+      >
+   >
+>.
+
+S14F2	/*(FAIS)SUBMAP_DOWNLOAD*/
+<L   
+   <L      
+      <L         
+         <A "R303571724IK1011707240FED">
+         <L            
+            <L               
+               <A "ORIGINLOCATION">
+               <U1 2>
+            >
+            <L               
+               <A "ROWS">
+               <U4 5>
+            >
+            <L               
+               <A "COLUMNS">
+               <U4 16>
+            >
+            <L               
+               <A "CELLSTATUS">
+               <A "00220000000002020000000000022000000000000000000000000000020000000000000000000200">
+            >
+            <L               
+               <A "BINCODE">
+               <A "AADDAAAAAAAAADADAAAAAAAAAAADDAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAADAA">
+            >
+            <L               
+               <A "LOTID">
+               <A "TCRHE86A">
+            >
+         >
+      >
+   >
+   <L      
+      <U1 0>
+      <L
+      >
+   >
+>.
+
+S14F9W	/* CREATEOBJECTREQUEST */
+<L   
+   <A  ""> 	/* OBJSPEC */
+   <A "CONTROLJOB"> 	/* OBJTYPE */
+   <L      
+      <L         
+         <A "OBJID"> 	/* ATRRIBUTE OBJECT ID */
+         <A "CONTROLJOB"> 	/* OBJECTID */
+      >
+      <L         
+         <A "PROCESSINGCTRLSPEC">
+         <L            
+            <A "PRJOBID1"> 	/* PRJOBID */
+            <A "PRJOBID2"> 	/* PRJOBID */
+            <A "PRJOBID3"> 	/* PRJOBID */
+         >
+      >
+      <L         
+         <A "CARRIERINPUTSPEC">
+         <L            
+            <A "CARRIERID"> 	/* CARRIERID */
+         >
+      >
+      <L         
+         <A "STARTMETHOD">
+         <BOOL 0x01> 	/* AUTO START */
+      >
+   >
+>.
+
+S14F10	/* CREATEOBJECTACK */
+<L   
+   <A "CONTROLJOB:CONTROLJOB">
+   <L
+   >
+   <L      
+      <U1 0>
+      <L
+      >
+   >
+>.
+
+S16F5W	/* RPJOBCOMMANDREQUEST */
+<L   
+   <U4 0> 	/* DATAID */
+   <A "PRJOBID"> 	/* PRJOBID */
+   <A "ABORT"> 	/* PRJOB COMMAND */
+   <L
+   >
+>.
+
+S16F6	/* PRJOBCOMMANDACK */
+<L   
+   <A "PRJOBID"> 	/* PRJOBID */
+   <L      
+      <BOOL 0x01> 	/* ACKA */
+      <L
+      >
+   >
+>.
+
+S16F11W	/* PRJOBCREATEENH */
+<L   
+   <U4 0> 	/* DATAID */
+   <A "PRJOBID"> 	/* PRJOBID */
+   <B 0x0D> 	/* MF = MATERIAL FORMAT CODE */
+   <L      
+      <L         
+         <A "CARRIERID1"> 	/* CARRIERID */
+         <L            
+            <U1 1> 	/* SLOTID */
+            <U1 2> 	/* SLOTID */
+            <U1 3> 	/* SLOTID */
+            <U1 4> 	/* SLOTID */
+            <U1 5> 	/* SLOTID */
+         >
+      >
+      <L         
+         <A "CARRIERID2"> 	/* CARRIERID */
+         <L            
+            <U1 1> 	/* SLOTID */
+            <U1 3> 	/* SLOTID */
+            <U1 5> 	/* SLOTID */
+            <U1 7> 	/* SLOTID */
+            <U1 9> 	/* SLOTID */
+         >
+      >
+   >
+   <L      
+      <U1 1> 	/* PR_RECIPE_METHOD */
+      <A "PPID"> 	/* PPID */
+      <L         
+         <L            
+            <A "RCPPARAM1"> 	/* RECIPE PARAMETER NAME  */
+            <A "RCPVALUE1"> 	/* RECIPE PARAMETER VALUE */
+         >
+         <L            
+            <A "RCPPARAM2"> 	/* RECIPE PARAMETER NAME  */
+            <A "RCPVALUE2"> 	/* RECIPE PARAMETER VALUE */
+         >
+      >
+   >
+   <BOOL 0x01> 	/* PR_PROCES_AUTOSTART */
+   <L      
+      <U4 1031> 	/* PR_PAUSE_EVENT */
+      <U4 1099> 	/* PR_PAUSE_EVENT */
+   >
+>.
+
+S16F12	/* PRJOBCREATEENH ACK */
+<L   
+   <A "PRJOBID"> 	/* PRJOBID */
+   <L      
+      <BOOL 0x01> 	/* ACK */
+      <L
+      >
+   >
+>.
+
+S16F15W	/* PRJOBMULTICREATE */
+<L   
+   <U4 0> 	/* DATAID */
+   <L      
+      <L         
+         <A "PRJOBID_1"> 	/* PRJOBID */
+         <B 0x0D> 	/* MATERIAL FORMATCODE */
+         <L            
+            <L               
+               <A "CARRIERID1"> 	/* CARRIERID */
+               <L                  
+                  <U1 1> 	/* SLOTID */
+                  <U1 2> 	/* SLOTID */
+                  <U1 3> 	/* SLOTID */
+                  <U1 4> 	/* SLOTID */
+                  <U1 5> 	/* SLOTID */
+               >
+            >
+         >
+         <L            
+            <U1 1> 	/* RECIPE METHOD (1 OR 2) */
+            <A "PPID1">
+            <L
+            >
+         >
+         <BOOL 0x01> 	/* AUTOSTART */
+         <L
+         >
+      >
+      <L         
+         <A "PRJOBID_2"> 	/* PRJOBID */
+         <B 0x0D> 	/* MATERIAL FORMATCODE */
+         <L            
+            <L               
+               <A "CARRIERID2"> 	/* CARRIERID */
+               <L                  
+                  <U1 1> 	/* SLOTID */
+                  <U1 2> 	/* SLOTID */
+                  <U1 3> 	/* SLOTID */
+                  <U1 4> 	/* SLOTID */
+                  <U1 5> 	/* SLOTID */
+               >
+            >
+         >
+         <L            
+            <U1 1> 	/* RECIPE METHOD (1 OR 2) */
+            <A "PPID2">
+            <L
+            >
+         >
+         <BOOL 0x01> 	/* AUTOSTART */
+         <L
+         >
+      >
+   >
+>.
+
+S16F16	/* PRJOBMULTICREATE ACK */
+<L   
+   <L      
+      <A "PRJOB1">
+      <A "PRJOB2">
+   >
+   <L      
+      <BOOL 0x01>
+      <L
+      >
+   >
+>.
+
+S16F17W	/* PRJOBDEQUEUE */
+<L   
+   <A "PRJOBID1"> 	/* PRJOBID */
+   <A "PRJOBID2"> 	/* PRJOBID */
+   <A "PRJOBID3"> 	/* PRJOBID */
+>.
+
+S16F18	/* PRJOBDEQUEUE ACK */
+<L   
+   <L      
+      <A "PRJOBID1"> 	/* PRJOBID */
+      <A "PRJOBID2"> 	/* PRJOBID */
+      <A "PRJOBID3"> 	/* PRJOBID */
+   >
+   <L      
+      <BOOL 0x01> 	/* ACKA */
+      <L
+      >
+   >
+>.
+
+S16F19W.	/* PRGETALLJOBS */
+
+S16F20	/* PRGETALLJOBS SEND */
+<L   
+   <L      
+      <A "PRJOBID1">
+      <U1 0>
+   >
+   <L      
+      <A "PRJOBID2">
+      <U1 3>
+   >
+>.
+
+S16F21W.	/* PRGETSPACE */
+
+S16F22	/* PRGETSPACE SEND */
+<U1 10>.
+
