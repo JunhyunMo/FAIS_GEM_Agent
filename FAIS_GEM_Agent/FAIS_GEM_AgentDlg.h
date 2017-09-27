@@ -74,4 +74,6 @@ public:
 	//2017-09-26
 	void eSECSMessageReceivedExgemctrl1(long nObjectID, long nStream, long nFunction, long nSysbyte);
 	CString BSTR2CString(BSTR bstr);
+	//2017-09-27
+	int		SubMapReq_S14F1(CString strPacketBody);
 };

@@ -517,51 +517,10 @@ void CFAIS_GEM_AgentDlg::eGEMCommStateChangedExgemctrl1(long nState)
 
 void CFAIS_GEM_AgentDlg::OnBnClickedBtSvrStop()
 {
-	SvrStop();
+	//SvrStop();
 
 	//for test - Setting data variable for complex type.
-	
-		//long nCEID = 1500;
-		//long nVID;
-		//BSTR bstr;
-		//CString strValue;
-
-		//nVID = 1103; //SUB ID
-		//strValue = L"R303571724IK1011707240FED";
-		//bstr = strValue.AllocSysString();
-		//m_XGem.GEMSetVariable(1, &nVID, &bstr);
-		//SysFreeString(bstr);
-
-
-		//nVID = 1110; //OPER
-		//strValue = L"W/B";
-		//bstr = strValue.AllocSysString();
-		//m_XGem.GEMSetVariable(1, &nVID, &bstr);
-		//SysFreeString(bstr);
-
-		//nVID = 1111; //SAMPLE_QTY 
-		//strValue = L"100";
-		//bstr = strValue.AllocSysString();
-		//m_XGem.GEMSetVariable(1, &nVID, &bstr);
-		//SysFreeString(bstr);
-
-		////MEASURE_VALUE LIST
-		//nVID = 1114; 
-		//long nObjId = 0;
-
-		//m_XGem.MakeObject(&nObjId);
-		//m_XGem.SetList(nObjId, 3);
-		//double d = 100;
-		//m_XGem.SetU4(nObjId,&d,1);
-		//d = 1111;
-		//m_XGem.SetU4(nObjId,&d,1);
-		//
-		//d = 22222;
-		//m_XGem.SetU4(nObjId,&d,1);
-
-		//m_XGem.GEMSetVariables(nObjId, nVID);
-
-	 //  m_XGem.GEMSetEvent(nCEID);
+	SubMapReq_S14F1(L"");
 }
 
 
@@ -935,7 +894,7 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 	BSTR bstr;
 	long nItemCount = 0;
 
-	CString strValue = L"";
+	CString strValue,strValue1,strValue2;
 	SHORT   shortValue = 0;
 	double  doubleValue = 0;
 	long	nSize = 1;
@@ -954,24 +913,204 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 
 		if(strValue == L"LOSS_CODE")
 		{
-			;
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPNAME = [LOSS_CODE_COUNT] 
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			nReturn = m_XGem.GetU4(nObjectID,&doubleValue,&nItemCount,nSize); //LOSS_CODE_COUNT = [2]
+			strValue2.Format(L"%.0f",doubleValue);
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPNAME = [LOSS_CODE] 
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //LOSS_CODE = [ADFM]
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); // CPNAME = [GRADE_CODE] 
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); // = [01]
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); // CPNAME = [DESC] 
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); // = [Adhesive(에폭시,WBL)에 의한 이물질 오염의 경우]   
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
 		}
 		else if(strValue == L"MGZ_READ_CONFIRM")
 		{
-			;
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPNAME = [MGZ-ID] 
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //MAGAZINE_ID = [IMS73225] 
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); // CPNAME = [CONFIRM-FLAG]  
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL1 = [T] 
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); // CPNAME = [LOT-ID]  
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //= [TCS1524QA] 
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [RECIPE-NAME] 
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL1 = [HPBW-D0001_1_1]
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //   CPNAME = [SAMPLE_QTY]  
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL1 = [100] 
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [USL] 
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL1 = [200] 
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [LSL] 
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL1 = [300]
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [UCL] 
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL1 = [400] 
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [LCL] 
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL1 = [500] 
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [MCP-NO] 
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL1 = [A-093TD] 
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
 		}
 		else if(strValue == L"SUB_CONFIRM")
 		{
-			;
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPNAME = [SUB-ID] 
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //SUBSTRATE_ID = [R303571724IK1011707240FED]
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPNAME = [CONFIRM-FLAG] 
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL = [T] 
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
 		}
 		else if(strValue == L"INSPECTION_CONFIRM")
 		{
-			;
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPNAME = [SUB-ID] 
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //SUBSTRATE_ID = [R303571724IK1011707240FED]
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPNAME = [CONFIRM-FLAG] 
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL = [T] 
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
 		}
 		else if(strValue == L"STOP")
 		{
 			;
 		}
+
 		m_XGem.MakeObject(&nObjectID);
 		m_XGem.SetList(nObjectID,2);
 		short nBinary = 0;    //ACK
@@ -994,102 +1133,135 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 	//TO-DO
 	else if(nStream == 14 && nFunction == 2) //S14F2 - SUBMAP Down
 	{
+		strLog.Format(L"[SECS-II:IN] S%dF%d SUBMAP Down",nStream, nFunction);
+		AddLogGEM(strLog.GetBuffer());
+
 		nReturn = m_XGem.GetList(nObjectID, &nItems); //nReturn 0: success, <0 failure
 		nReturn = m_XGem.GetList(nObjectID, &nItems);
 		nReturn = m_XGem.GetList(nObjectID, &nItems);
 		nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount);
 		strValue = BSTR2CString(bstr);
 		SysFreeString(bstr);
-		AfxMessageBox(L"SUB-ID " + strValue);
+		strLog.Format(L"SUB-ID %s" ,strValue);
+		AddLogGEM(strLog.GetBuffer());
 		
 		nReturn = m_XGem.GetList(nObjectID, &nItems);
 		nReturn = m_XGem.GetList(nObjectID, &nItems);
 		nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount);
-		strValue = BSTR2CString(bstr);
+		strValue1 = BSTR2CString(bstr);
 		SysFreeString(bstr);
-		AfxMessageBox(L"ATTRID1 " + strValue);
 
 		m_XGem.GetU1(nObjectID,&shortValue,&nItemCount,nSize);
-		strValue.Format(L"Origin Loc %d",shortValue);
-		AfxMessageBox(strValue);
+		strValue2.Format(L"%d",shortValue);
+		strLog.Format(L"[%s] %s",strValue1,strValue2);
+		AddLogGEM(strLog.GetBuffer());
 
 		nReturn = m_XGem.GetList(nObjectID, &nItems);
 		nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount);
-		strValue = BSTR2CString(bstr);
+		strValue1 = BSTR2CString(bstr);
 		SysFreeString(bstr);
-		AfxMessageBox(L"ATTRID2 " + strValue);
-
+		
 		m_XGem.GetU4(nObjectID,&doubleValue,&nItemCount,nSize);
-		strValue.Format(L"Rows %.0f",doubleValue);
-		AfxMessageBox(strValue);
+		strValue2.Format(L"%.0f",doubleValue);
+		strLog.Format(L"[%s] %s",strValue1,strValue2);
+		AddLogGEM(strLog.GetBuffer());
 
 		nReturn = m_XGem.GetList(nObjectID, &nItems);
 		nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount);
-		strValue = BSTR2CString(bstr);
+		strValue1 = BSTR2CString(bstr);
 		SysFreeString(bstr);
-		AfxMessageBox(L"ATTRID3 " + strValue);
-
+		
 		m_XGem.GetU4(nObjectID,&doubleValue,&nItemCount,nSize);
-		strValue.Format(L"Columns %.0f",doubleValue);
-		AfxMessageBox(strValue);
+		strValue2.Format(L"%.0f",doubleValue);
+		strLog.Format(L"[%s] %s",strValue1,strValue2);
+		AddLogGEM(strLog.GetBuffer());
 
 		nReturn = m_XGem.GetList(nObjectID, &nItems);
 		nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount);
-		strValue = BSTR2CString(bstr);
+		strValue1 = BSTR2CString(bstr);
 		SysFreeString(bstr);
-		AfxMessageBox(L"ATTRID4 " + strValue);
-
+		
 		nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount);
-		strValue = BSTR2CString(bstr);
+		strValue2 = BSTR2CString(bstr);
 		SysFreeString(bstr);
-		AfxMessageBox(L"Cell Status " + strValue);
+		strLog.Format(L"[%s] %s",strValue1,strValue2);
+		AddLogGEM(strLog.GetBuffer());
 
 		nReturn = m_XGem.GetList(nObjectID, &nItems);
 		nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount);
-		strValue = BSTR2CString(bstr);
+		strValue1 = BSTR2CString(bstr);
 		SysFreeString(bstr);
-		AfxMessageBox(L"ATTRID5 " + strValue);
 
 		nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount);
-		strValue = BSTR2CString(bstr);
+		strValue2 = BSTR2CString(bstr);
 		SysFreeString(bstr);
-		AfxMessageBox(L"BIN_CODE  " + strValue);
-
+		strLog.Format(L"[%s] %s",strValue1,strValue2);
+		AddLogGEM(strLog.GetBuffer());
+		
 		nReturn = m_XGem.GetList(nObjectID, &nItems);
 		nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount);
-		strValue = BSTR2CString(bstr);
+		strValue1 = BSTR2CString(bstr);
 		SysFreeString(bstr);
-		AfxMessageBox(L"ATTRID6 " + strValue);
+		
 
 		nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount);
-		strValue = BSTR2CString(bstr);
+		strValue2 = BSTR2CString(bstr);
 		SysFreeString(bstr);
-		AfxMessageBox(L"LOT_ID  " + strValue);
+		strLog.Format(L"[%s] %s",strValue1,strValue2);
+		AddLogGEM(strLog.GetBuffer());
 
-		m_XGem.CloseObject(nObjectID);
+		nReturn = m_XGem.CloseObject(nObjectID);
 	}
 }
 
+int	CFAIS_GEM_AgentDlg::SubMapReq_S14F1(CString strPacketBody)
+{
+	long nRet = -1;
+	long nObjectID = 0;
+	long nItemCount = 0;
+	CString strValue = L"";
 
-		
-		//nVID = 1114; 
-		//long nObjId = 0;
-
-		//m_XGem.MakeObject(&nObjId);
-
-		//nIdx = strSV.Find(L"|",nIdxPrev+1);
-		//strValue = strSV.Mid(nIdxPrev+1, nIdx-nIdxPrev -1);
-		//nIdxPrev = nIdx;
-		//int nListDataCount = _wtoi(strValue); //리스트포함 데이터 수량
-		//m_XGem.SetList(nObjId, nListDataCount);
-		//int i; double d;
-		//for( i = 0; i < nListDataCount; i++ )
-		//{
-		//	nIdx = strSV.Find(L"|",nIdxPrev+1);
-		//	strValue = strSV.Mid(nIdxPrev+1, nIdx-nIdxPrev -1);
-		//	nIdxPrev = nIdx;
-		//	d = _wtoi(strValue);
-		//	m_XGem.SetU4(nObjId,&d,1);
-		//}
+	m_XGem.MakeObject(&nObjectID);
 	
-		//m_XGem.GEMSetVariables(nObjId, nVID);
+	nItemCount = 5;
+	m_XGem.SetList(nObjectID,nItemCount);
+	
+	strValue = L"MODEL"; //OBJTYPE = [MODEL] 
+	m_XGem.SetAscii(nObjectID,(LPCTSTR)strValue,strValue.GetLength());
+
+	strValue = L"StripMap"; //OBJSPEC = [StripMap] 
+	m_XGem.SetAscii(nObjectID,(LPCTSTR)strValue,strValue.GetLength());
+
+	nItemCount = 1;
+	m_XGem.SetList(nObjectID,nItemCount);
+	strValue = L"R303571724IK1011707240FED"; //SUB_ID = [R303571724IK1011707240FED] 
+	m_XGem.SetAscii(nObjectID,(LPCTSTR)strValue,strValue.GetLength());
+	
+	nItemCount = 0; // (?) 업체용 문서상.. 테스트시 확인필요
+	m_XGem.SetList(nObjectID,nItemCount);
+	
+	nItemCount = 6;
+	m_XGem.SetList(nObjectID,nItemCount);
+
+	strValue = L"OriginLocation";
+	m_XGem.SetAscii(nObjectID,(LPCTSTR)strValue,strValue.GetLength());
+
+	strValue = L"Rows";
+	m_XGem.SetAscii(nObjectID,(LPCTSTR)strValue,strValue.GetLength());
+
+	strValue = L"Columns";
+	m_XGem.SetAscii(nObjectID,(LPCTSTR)strValue,strValue.GetLength());
+
+	strValue = L"CellStatus";
+	m_XGem.SetAscii(nObjectID,(LPCTSTR)strValue,strValue.GetLength());
+	
+	strValue = L"Bincode";
+	m_XGem.SetAscii(nObjectID,(LPCTSTR)strValue,strValue.GetLength());
+
+	strValue = L"LotID";
+	m_XGem.SetAscii(nObjectID,(LPCTSTR)strValue,strValue.GetLength());
+	
+	nRet = m_XGem.SendSECSMessage(nObjectID,14,1,0);
+	return nRet;
+}
+
