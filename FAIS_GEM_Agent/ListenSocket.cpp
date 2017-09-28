@@ -61,18 +61,24 @@ void CListenSocket::CloseClientSocket(CSocket* pClient)
 	}
 }
 
-void CListenSocket::SendDataAll(TCHAR* pszMessage)
+void CListenSocket::SendDataAll(CString strSendData)
 {
 	POSITION pos;
 	pos = m_ptrClientSocketList.GetHeadPosition();
 	CClientSocket* pClient = NULL;
+
+	CFAIS_GEM_AgentDlg* pMain = (CFAIS_GEM_AgentDlg*)AfxGetMainWnd();
+	CHAR chSendPacket[1024];
+	memset(chSendPacket,0x00,sizeof(chSendPacket));
 
 	while(pos != NULL)
 	{
 		pClient = (CClientSocket*)m_ptrClientSocketList.GetNext(pos);
 		if(pClient != NULL)
 		{
-			pClient->Send(pszMessage, lstrlen(pszMessage) * 2);
+			pMain->Unicode2MBCS(strSendData.GetBuffer(0),chSendPacket);
+			//pClient->Send(pszMessage, lstrlen(pszMessage) * 2);
+			pClient->Send((LPVOID)chSendPacket, strlen(chSendPacket) + 1);
 		}
 	}
 }

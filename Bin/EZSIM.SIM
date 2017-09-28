@@ -703,6 +703,20 @@ S2F41W	/*(FAIS)MGZ_READ_CONFIRM*/
                <A "D100">
             >
          >
+         <L            
+            <L               
+               <A "SUB_ID">
+               <A "R303369813IK1011708080F15-2">
+            >
+            <L               
+               <A "OPER">
+               <A "D/A1">
+            >
+            <L               
+               <A "EQP_ID">
+               <A "D100">
+            >
+         >
       >
    >
 >.

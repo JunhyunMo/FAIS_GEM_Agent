@@ -260,17 +260,15 @@ void CFAIS_GEM_AgentDlg::ProcGEM_FromEQ(CString strIP, CString strRcv)
 	
 }
 
-void CFAIS_GEM_AgentDlg::ProcGEM_ToEQ(CString strIP, CString strSendPacket)
+void CFAIS_GEM_AgentDlg::ProcGEM_ToEQ(CString strSendPacket)
 {
-	/*BOOL bRet = FALSE;
-	bRet = m_ListenSocket.SendData(LOCAL_HOST,strSendPacket);
-	if(bRet == TRUE)
-	{
-		CString strMsg;
-		strMsg.Format(L"[SND]%s",strSendPacket);
-		AddLogTCP(strMsg);
-		GetLog()->Debug(strMsg.GetBuffer());
-	}*/
+	m_ListenSocket.SendDataAll(strSendPacket.GetBuffer());
+	
+	CString strMsg;
+	strMsg.Format(L"[SND-ALL] %s",strSendPacket);
+	AddLogTCP(strMsg);
+	GetLog()->Debug(strMsg.GetBuffer());
+	
 }
 
 void CFAIS_GEM_AgentDlg::AddLogGEM(CString str)
@@ -791,7 +789,6 @@ int CFAIS_GEM_AgentDlg::SendERS(CString strPacketBody)
 		nIdx = strSV.Find(L"|");
 		strValue = strSV.Left(nIdx);
 		nIdxPrev = nIdx;
-
 		nVID = 1103; //SUB_ID(ASCII) 
 		bstr = strValue.AllocSysString();
 		m_XGem.GEMSetVariable(1, &nVID, &bstr);
@@ -800,7 +797,6 @@ int CFAIS_GEM_AgentDlg::SendERS(CString strPacketBody)
 		nIdx = strSV.Find(L"|",nIdxPrev+1);
 		strValue = strSV.Mid(nIdxPrev+1, nIdx-nIdxPrev -1);
 		nIdxPrev = nIdx;
-
 		nVID = 1110; //OPER(ASCII) 
 		bstr = strValue.AllocSysString();
 		m_XGem.GEMSetVariable(1, &nVID, &bstr);
@@ -809,23 +805,22 @@ int CFAIS_GEM_AgentDlg::SendERS(CString strPacketBody)
 		nIdx = strSV.Find(L"|",nIdxPrev+1);
 		strValue = strSV.Mid(nIdxPrev+1, nIdx-nIdxPrev -1);
 		nIdxPrev = nIdx;
-
 		nVID = 1111; //SAMPLE_QTY(U4) 
 		bstr = strValue.AllocSysString();
 		m_XGem.GEMSetVariable(1, &nVID, &bstr);
 		SysFreeString(bstr);
 
 		////MEASURE_VALUE LIST - data type U4 나중에 현업 확인 - 3D 측정값? float x.xx - 2017.09.25 미팅시 청주 현업 engr' ment -  
-		nVID = 1114; 
-		long nObjId = 0;
-
+		long nObjId;
 		m_XGem.MakeObject(&nObjId);
-
+		
 		nIdx = strSV.Find(L"|",nIdxPrev+1);
 		strValue = strSV.Mid(nIdxPrev+1, nIdx-nIdxPrev -1);
 		nIdxPrev = nIdx;
+		nVID = 1114; 
 		int nListDataCount = _wtoi(strValue); //리스트포함 데이터 수량
 		m_XGem.SetList(nObjId, nListDataCount);
+
 		int i; double d;
 		for( i = 0; i < nListDataCount; i++ )
 		{
@@ -837,7 +832,6 @@ int CFAIS_GEM_AgentDlg::SendERS(CString strPacketBody)
 		}
 	
 		m_XGem.GEMSetVariables(nObjId, nVID);
-		
 	}
 
 	nRet = m_XGem.GEMSetEvent(nCEID);
@@ -901,13 +895,20 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 
 	CString strLog;
 
-	if(nStream == 2 && nFunction == 41) //S2F41 - Host Command
+	//2017-09-28
+	CString strPacketBody = L""; //VISION,VRS,MMI 전송용 Packet Body;
+	int nTotalPacketSize = 0;
+	CString	strSendPacket = L"";
+	//
+
+//S2F41 - Host Command
+	if(nStream == 2 && nFunction == 41) 
 	{
 		nReturn = m_XGem.GetList(nObjectID, &nItems);
 		nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount);
 		strValue = BSTR2CString(bstr);
 		SysFreeString(bstr);
-		//AfxMessageBox(L"RCMD " + strValue);
+		strPacketBody.Format(L"%s|",strValue);
 		strLog.Format(L"[SECS-II:IN] S%dF%d HOST COMMAND (%s) ",nStream, nFunction, strValue);
 		AddLogGEM(strLog.GetBuffer());
 
@@ -918,20 +919,28 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPNAME = [LOSS_CODE_COUNT] 
 			strValue1 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
 			nReturn = m_XGem.GetU4(nObjectID,&doubleValue,&nItemCount,nSize); //LOSS_CODE_COUNT = [2]
 			strValue2.Format(L"%.0f",doubleValue);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
 			strLog.Format(L"[%s] %s",strValue1,strValue2);
 			AddLogGEM(strLog.GetBuffer());
-
+			
 			nReturn = m_XGem.GetList(nObjectID, &nItems);
 			nReturn = m_XGem.GetList(nObjectID, &nItems);
 			nReturn = m_XGem.GetList(nObjectID, &nItems);
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPNAME = [LOSS_CODE] 
 			strValue1 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //LOSS_CODE = [ADFM]
 			strValue2 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
 			strLog.Format(L"[%s] %s",strValue1,strValue2);
 			AddLogGEM(strLog.GetBuffer());
 
@@ -939,9 +948,13 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); // CPNAME = [GRADE_CODE] 
 			strValue1 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); // = [01]
 			strValue2 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
 			strLog.Format(L"[%s] %s",strValue1,strValue2);
 			AddLogGEM(strLog.GetBuffer());
 
@@ -949,11 +962,16 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); // CPNAME = [DESC] 
 			strValue1 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); // = [Adhesive(에폭시,WBL)에 의한 이물질 오염의 경우]   
 			strValue2 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
 			strLog.Format(L"[%s] %s",strValue1,strValue2);
 			AddLogGEM(strLog.GetBuffer());
+			
 		}
 		else if(strValue == L"MGZ_READ_CONFIRM")
 		{
@@ -962,9 +980,15 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPNAME = [MGZ-ID] 
 			strValue1 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //MAGAZINE_ID = [IMS73225] 
 			strValue2 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
 			strLog.Format(L"[%s] %s",strValue1,strValue2);
 			AddLogGEM(strLog.GetBuffer());
 
@@ -972,9 +996,13 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); // CPNAME = [CONFIRM-FLAG]  
 			strValue1 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL1 = [T] 
 			strValue2 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
 			strLog.Format(L"[%s] %s",strValue1,strValue2);
 			AddLogGEM(strLog.GetBuffer());
 
@@ -982,9 +1010,13 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); // CPNAME = [LOT-ID]  
 			strValue1 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //= [TCS1524QA] 
 			strValue2 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
 			strLog.Format(L"[%s] %s",strValue1,strValue2);
 			AddLogGEM(strLog.GetBuffer());
 
@@ -992,9 +1024,13 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [RECIPE-NAME] 
 			strValue1 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL1 = [HPBW-D0001_1_1]
 			strValue2 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
 			strLog.Format(L"[%s] %s",strValue1,strValue2);
 			AddLogGEM(strLog.GetBuffer());
 
@@ -1002,9 +1038,13 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //   CPNAME = [SAMPLE_QTY]  
 			strValue1 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL1 = [100] 
 			strValue2 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
 			strLog.Format(L"[%s] %s",strValue1,strValue2);
 			AddLogGEM(strLog.GetBuffer());
 
@@ -1012,9 +1052,13 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [USL] 
 			strValue1 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL1 = [200] 
 			strValue2 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
 			strLog.Format(L"[%s] %s",strValue1,strValue2);
 			AddLogGEM(strLog.GetBuffer());
 
@@ -1022,8 +1066,12 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [LSL] 
 			strValue1 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL1 = [300]
 			strValue2 = BSTR2CString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
 			SysFreeString(bstr);
 			strLog.Format(L"[%s] %s",strValue1,strValue2);
 			AddLogGEM(strLog.GetBuffer());
@@ -1032,9 +1080,13 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [UCL] 
 			strValue1 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL1 = [400] 
 			strValue2 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
 			strLog.Format(L"[%s] %s",strValue1,strValue2);
 			AddLogGEM(strLog.GetBuffer());
 
@@ -1042,9 +1094,13 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [LCL] 
 			strValue1 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL1 = [500] 
 			strValue2 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
 			strLog.Format(L"[%s] %s",strValue1,strValue2);
 			AddLogGEM(strLog.GetBuffer());
 
@@ -1052,11 +1108,164 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [MCP-NO] 
 			strValue1 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL1 = [A-093TD] 
 			strValue2 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
 			strLog.Format(L"[%s] %s",strValue1,strValue2);
 			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [MODE]
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL1 = [DDR4]  
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [DENSITY]
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); // CPVAL1 = [8G] 
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [TECH] 
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); // CPVAL1 = [PL] 
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [PKG1] 
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); // CPVAL1 = [FBGA] 
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [PKG2] 
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); // CPVAL1 = [DDP] 
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [LEAD] 
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); // CPVAL1 = [78] 
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [SUB_COUNT] 
+			strValue1 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
+			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL1 = [n] 
+			strValue2 = BSTR2CString(bstr);
+			SysFreeString(bstr);
+			int nSubCount = _wtoi(strValue2); //SUB 갯수
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
+			strLog.Format(L"[%s] %s",strValue1,strValue2);
+			AddLogGEM(strLog.GetBuffer());
+
+			nReturn = m_XGem.GetList(nObjectID, &nItems);
+		
+			for(int i = 0; i < nSubCount; i++)
+			{
+				nReturn = m_XGem.GetList(nObjectID, &nItems);
+
+				nReturn = m_XGem.GetList(nObjectID, &nItems);
+				nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [SUB_ID]
+				strValue1 = BSTR2CString(bstr);
+				SysFreeString(bstr);
+				strPacketBody += strValue1;
+				strPacketBody += L"|";
+				nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL1 
+				strValue2 = BSTR2CString(bstr);
+				SysFreeString(bstr);
+				strPacketBody += strValue2;
+				strPacketBody += L"|";
+				strLog.Format(L"[%s] %s",strValue1,strValue2);
+				AddLogGEM(strLog.GetBuffer());
+
+				nReturn = m_XGem.GetList(nObjectID, &nItems);
+				nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [OPER] 
+				strValue1 = BSTR2CString(bstr);
+				SysFreeString(bstr);
+				strPacketBody += strValue1;
+				strPacketBody += L"|";
+				nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL2 
+				strValue2 = BSTR2CString(bstr);
+				SysFreeString(bstr);
+				strPacketBody += strValue2;
+				strPacketBody += L"|";
+				strLog.Format(L"[%s] %s",strValue1,strValue2);
+				AddLogGEM(strLog.GetBuffer());
+
+				nReturn = m_XGem.GetList(nObjectID, &nItems);
+				nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //  CPNAME = [EQP_ID] 
+				strValue1 = BSTR2CString(bstr);
+				SysFreeString(bstr);
+				strPacketBody += strValue1;
+				strPacketBody += L"|";
+				nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL3 
+				strValue2 = BSTR2CString(bstr);
+				SysFreeString(bstr);
+				strPacketBody += strValue2;
+				strPacketBody += L"|";
+				strLog.Format(L"[%s] %s",strValue1,strValue2);
+				AddLogGEM(strLog.GetBuffer());
+			}
+
 		}
 		else if(strValue == L"SUB_CONFIRM")
 		{
@@ -1065,9 +1274,13 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPNAME = [SUB-ID] 
 			strValue1 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //SUBSTRATE_ID = [R303571724IK1011707240FED]
 			strValue2 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
 			strLog.Format(L"[%s] %s",strValue1,strValue2);
 			AddLogGEM(strLog.GetBuffer());
 
@@ -1075,9 +1288,13 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPNAME = [CONFIRM-FLAG] 
 			strValue1 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL = [T] 
 			strValue2 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
 			strLog.Format(L"[%s] %s",strValue1,strValue2);
 			AddLogGEM(strLog.GetBuffer());
 		}
@@ -1088,10 +1305,13 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPNAME = [SUB-ID] 
 			strValue1 = BSTR2CString(bstr);
 			SysFreeString(bstr);
-
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //SUBSTRATE_ID = [R303571724IK1011707240FED]
 			strValue2 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
 			strLog.Format(L"[%s] %s",strValue1,strValue2);
 			AddLogGEM(strLog.GetBuffer());
 
@@ -1099,10 +1319,13 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPNAME = [CONFIRM-FLAG] 
 			strValue1 = BSTR2CString(bstr);
 			SysFreeString(bstr);
-
+			strPacketBody += strValue1;
+			strPacketBody += L"|";
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPVAL = [T] 
 			strValue2 = BSTR2CString(bstr);
 			SysFreeString(bstr);
+			strPacketBody += strValue2;
+			strPacketBody += L"|";
 			strLog.Format(L"[%s] %s",strValue1,strValue2);
 			AddLogGEM(strLog.GetBuffer());
 		}
@@ -1110,7 +1333,16 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 		{
 			;
 		}
-
+		else //Host Command 오류
+		{
+			return;
+		}
+//VISION,VRS,MMI 전송
+		nTotalPacketSize = strPacketBody.GetLength() + 8;
+		strSendPacket.Format(L"HCS%04d|%s",nTotalPacketSize,strPacketBody);
+		ProcGEM_ToEQ(strSendPacket);
+//
+//Host Command 응답 S2F42
 		m_XGem.MakeObject(&nObjectID);
 		m_XGem.SetList(nObjectID,2);
 		short nBinary = 0;    //ACK
@@ -1118,7 +1350,7 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 		m_XGem.SetList(nObjectID,0);
 		
 		nReturn =  m_XGem.SendSECSMessage(nObjectID, nStream, nFunction + 1, nSysbyte);
-
+//
 		if(nReturn == 0)
 		{
 			strLog.Format(L"[SECS-II:OUT]  S%dF%d", nStream, nFunction + 1);

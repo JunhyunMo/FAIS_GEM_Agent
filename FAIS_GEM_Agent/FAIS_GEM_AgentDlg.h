@@ -43,7 +43,7 @@ public:
 	void	AddLogTCP(CString str);
 
 	void	ProcGEM_FromEQ(CString strIP, CString strRcv);
-	void	ProcGEM_ToEQ(CString strIP, CString strRcv);
+	void	ProcGEM_ToEQ(CString strRcv);
 	CExgemctrl1 m_XGem;
 	
 	CListBox m_ctlListGEM;
@@ -76,4 +76,6 @@ public:
 	CString BSTR2CString(BSTR bstr);
 	//2017-09-27
 	int		SubMapReq_S14F1(CString strPacketBody);
+	//2017-09-28
+
 };
