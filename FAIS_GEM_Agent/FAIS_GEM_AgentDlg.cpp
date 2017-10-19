@@ -107,6 +107,7 @@ BOOL CFAIS_GEM_AgentDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 큰 아이콘을 설정합니다.
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
+	//중복실행방지
 	HANDLE hEvent;
     hEvent = CreateEvent(NULL, FALSE, TRUE, AfxGetAppName());
     if ( GetLastError() == ERROR_ALREADY_EXISTS)
@@ -515,10 +516,10 @@ void CFAIS_GEM_AgentDlg::eGEMCommStateChangedExgemctrl1(long nState)
 
 void CFAIS_GEM_AgentDlg::OnBnClickedBtSvrStop()
 {
-	//SvrStop();
+	SvrStop();
 
 	//for test - Setting data variable for complex type.
-	SubMapReq_S14F1(L"");
+	//SubMapReq_S14F1(L"");
 }
 
 
