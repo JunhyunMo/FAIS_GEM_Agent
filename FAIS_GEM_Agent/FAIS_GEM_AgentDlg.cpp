@@ -843,6 +843,20 @@ int CFAIS_GEM_AgentDlg::SendERS(CString strPacketBody)
 	
 		m_XGem.GEMSetVariables(nObjId, nVID);
 	}
+	else if(strCEID == L"1600" ) // SUB Unoad (1600) - ERS0040|1800|R303571724IK1011707240FEDI|
+	{
+		nCEID = (long)_wtoi(strCEID);
+		strEventName = L"SUB Unload";
+		
+		nIdx = strSV.Find(L"|");
+		strValue = strSV.Left(nIdx);
+		nIdxPrev = nIdx;
+
+		nVID = 1103; //SUB_ID(ASCII) -  R303571724IK1011707240FEDI
+		bstr = strValue.AllocSysString();
+		m_XGem.GEMSetVariable(1, &nVID, &bstr);
+		SysFreeString(bstr);
+	}
 
 	nRet = m_XGem.GEMSetEvent(nCEID);
 
