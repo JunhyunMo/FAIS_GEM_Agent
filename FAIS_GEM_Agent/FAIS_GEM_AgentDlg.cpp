@@ -398,6 +398,7 @@ void CFAIS_GEM_AgentDlg::eXGEMStateEventExgemctrl1(long nState)
 		m_XGem.GEMSetEstablish(1);
 		m_XGem.GEMEQInitialized(1); 
 	}
+
 }
 
 BOOL CFAIS_GEM_AgentDlg::SvrStart()
@@ -492,8 +493,6 @@ void CFAIS_GEM_AgentDlg::eGEMCommStateChangedExgemctrl1(long nState)
 
 	if(nState == 5) //Communication State -1 : None 1 : Comm Disabled 2 : WaitCRFromHost 3 : WaitDelay 4 : WaitCRA 5 : Communicating
 	 {
-		
-
 		nReturn = m_XGem.GEMReqRemote(); //
 		if( nReturn == 0 ) {
 			AddLogGEM(L"Send GEMReqRemote successfully");
@@ -507,10 +506,6 @@ void CFAIS_GEM_AgentDlg::eGEMCommStateChangedExgemctrl1(long nState)
 			AddLogGEM(strMsg);
 		}
 	 }
-	 else
-	 {
-		;
-	 }
 }
 
 
@@ -520,6 +515,20 @@ void CFAIS_GEM_AgentDlg::OnBnClickedBtSvrStop()
 
 	//for test - Setting data variable for complex type.
 	//SubMapReq_S14F1(L"");
+	//for test
+	CString strMsg;
+	int nReturn = m_XGem.GEMReqRemote(); //
+		if( nReturn == 0 ) {
+			AddLogGEM(L"Send GEMReqRemote successfully");
+			//SetTimer(IDD,1000,NULL);
+			//ControlModeChangeERS(805);
+			m_nControlMode = CONTROL_ONLINE_REMOTE;
+			SetTimer(TIMER_CONTROL_MODE_ERS,1000,NULL);
+		}
+		else {
+			strMsg.Format(L"Fail to GEMReqRemote (%d)", nReturn );
+			AddLogGEM(strMsg);
+		}
 }
 
 
@@ -556,26 +565,26 @@ void CFAIS_GEM_AgentDlg::ControlModeERS(long nCEID)
 	CString strValue;
 	BSTR bstr;
 
-	long nVID = SVID_EQUIPMENT_STATUS; //810 
-	strValue = L"test01";
+	long nVID = SVID_EQUIPMENT_STATUS; //810 Equipment Status (IDE/RUN…)
+	strValue = L"IDE"; //Equipment Status IDLE/RUN)
 	bstr = strValue.AllocSysString();
 	nReturn = m_XGem.GEMSetVariable(1, &nVID, &bstr);
 	SysFreeString(bstr);
 
-	nVID = SVID_CURRENT_RECIPE; //1102 
-	strValue = L"test02";
+	nVID = SVID_CURRENT_RECIPE; //1102 Current Recipe Name
+	strValue = L"";
 	bstr = strValue.AllocSysString();
 	nReturn = m_XGem.GEMSetVariable(1, &nVID, &bstr);
 	SysFreeString(bstr);
 	
-	nVID = SVID_DUMMY_STATUS; //830
-	strValue = L"test03";
+	nVID = SVID_DUMMY_STATUS; //830 Dummy Status (1: ON, 0: OFF)
+	strValue = L"0";
 	bstr = strValue.AllocSysString();
 	nReturn = m_XGem.GEMSetVariable(1, &nVID, &bstr);
 	SysFreeString(bstr);
 	
 	nVID = SVID_MAGAZINE_ID; //1101
-	strValue = L"test04";
+	strValue = L"";
 	bstr = strValue.AllocSysString();
 	nReturn = m_XGem.GEMSetVariable(1, &nVID, &bstr);
 	SysFreeString(bstr);
@@ -981,8 +990,6 @@ void CFAIS_GEM_AgentDlg::eSECSMessageReceivedExgemctrl1(long nObjectID, long nSt
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //CPNAME = [MGZ-ID] 
 			strValue1 = BSTR2CString(bstr);
 			SysFreeString(bstr);
-			strPacketBody += strValue1;
-			strPacketBody += L"|";
 			strPacketBody += strValue1;
 			strPacketBody += L"|";
 			nReturn = m_XGem.GetAscii(nObjectID,&bstr,&nItemCount); //MAGAZINE_ID = [IMS73225] 
